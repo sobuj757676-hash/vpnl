@@ -1,0 +1,207 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Status {
+  draft
+  published
+}
+
+enum HeroBgStyle {
+  solid
+  gradient
+  image
+  video
+}
+
+enum Orientation {
+  portrait
+  landscape
+}
+
+enum ActionType {
+  create
+  update
+  delete
+  publish
+  unpublish
+  login
+  logout
+}
+
+enum EventType {
+  page_view
+  app_store_click
+  play_store_click
+  pricing_click
+}
+
+model VpnProduct {
+  id                   String       @id @default(uuid()) @db.Uuid
+  name                 String       @db.VarChar(60)
+  subdomainSlug        String       @unique @map("subdomain_slug") @db.VarChar(60)
+  shortDescription     String?      @map("short_description") @db.VarChar(160)
+  longDescription      String?      @map("long_description") @db.Text
+  logoUrl              String?      @map("logo_url") @db.VarChar(500)
+  faviconUrl           String?      @map("favicon_url") @db.VarChar(500)
+  primaryColor         String?      @map("primary_color") @db.Char(7)
+  secondaryColor       String?      @map("secondary_color") @db.Char(7)
+  fontFamily           String?      @map("font_family") @db.VarChar(100)
+  heroBgStyle          HeroBgStyle? @map("hero_bg_style")
+  heroBgValue          String?      @map("hero_bg_value") @db.VarChar(500)
+  playStoreUrl         String?      @map("play_store_url") @db.VarChar(500)
+  appStoreUrl          String?      @map("app_store_url") @db.VarChar(500)
+  appRating            Decimal?     @map("app_rating") @db.Decimal(2, 1)
+  downloadCountDisplay String?      @map("download_count_display") @db.VarChar(20)
+  showPlayBadge        Boolean      @default(true) @map("show_play_badge")
+  showAppBadge         Boolean      @default(true) @map("show_app_badge")
+  deviceMockupUrl      String?      @map("device_mockup_url") @db.VarChar(500)
+  metaTitle            String?      @map("meta_title") @db.VarChar(70)
+  metaDescription      String?      @map("meta_description") @db.VarChar(160)
+  status               Status       @default(draft)
+  displayOrder         Int          @default(0) @map("display_order")
+  tags                 Json?        @db.JsonB
+  createdAt            DateTime     @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt            DateTime     @updatedAt @map("updated_at") @db.Timestamptz()
+
+  features     VpnFeature[]
+  pricingPlans VpnPricingPlan[]
+  legal        VpnLegal[]
+  screenshots  VpnScreenshot[]
+  testimonials VpnTestimonial[]
+
+  @@index([subdomainSlug])
+  @@map("vpn_products")
+}
+
+model VpnFeature {
+  id           String  @id @default(uuid()) @db.Uuid
+  vpnProductId String  @map("vpn_product_id") @db.Uuid
+  iconName     String? @map("icon_name") @db.VarChar(100)
+  iconSvgUrl   String? @map("icon_svg_url") @db.VarChar(500)
+  title        String? @db.VarChar(50)
+  description  String? @db.VarChar(100)
+  displayOrder Int?    @map("display_order")
+
+  vpnProduct VpnProduct @relation(fields: [vpnProductId], references: [id], onDelete: Cascade)
+
+  @@map("vpn_features")
+}
+
+model VpnPricingPlan {
+  id           String   @id @default(uuid()) @db.Uuid
+  vpnProductId String   @map("vpn_product_id") @db.Uuid
+  planName     String?  @map("plan_name") @db.VarChar(40)
+  monthlyPrice Decimal? @map("monthly_price") @db.Decimal(10, 2)
+  yearlyPrice  Decimal? @map("yearly_price") @db.Decimal(10, 2)
+  currency     String?  @db.Char(3)
+  featuresList Json?    @map("features_list") @db.JsonB
+  ctaLabel     String   @default("Get Started") @map("cta_label") @db.VarChar(40)
+  ctaUrl       String?  @map("cta_url") @db.VarChar(500)
+  isFeatured   Boolean  @default(false) @map("is_featured")
+  displayOrder Int?     @map("display_order")
+
+  vpnProduct VpnProduct @relation(fields: [vpnProductId], references: [id], onDelete: Cascade)
+
+  @@map("vpn_pricing_plans")
+}
+
+model VpnLegal {
+  id                String    @id @default(uuid()) @db.Uuid
+  vpnProductId      String    @map("vpn_product_id") @db.Uuid
+  privacyPolicyHtml String?   @map("privacy_policy_html") @db.Text
+  termsHtml         String?   @map("terms_html") @db.Text
+  effectiveDate     DateTime? @map("effective_date") @db.Date
+  contactEmail      String?   @map("contact_email") @db.VarChar(254)
+  updatedAt         DateTime? @map("updated_at") @db.Timestamptz()
+
+  vpnProduct VpnProduct @relation(fields: [vpnProductId], references: [id], onDelete: Cascade)
+
+  @@map("vpn_legal")
+}
+
+model VpnScreenshot {
+  id           String       @id @default(uuid()) @db.Uuid
+  vpnProductId String       @map("vpn_product_id") @db.Uuid
+  imageUrl     String?      @map("image_url") @db.VarChar(500)
+  altText      String?      @map("alt_text") @db.VarChar(200)
+  orientation  Orientation?
+  displayOrder Int?         @map("display_order")
+
+  vpnProduct VpnProduct @relation(fields: [vpnProductId], references: [id], onDelete: Cascade)
+
+  @@map("vpn_screenshots")
+}
+
+model VpnTestimonial {
+  id           String   @id @default(uuid()) @db.Uuid
+  vpnProductId String   @map("vpn_product_id") @db.Uuid
+  avatarUrl    String?  @map("avatar_url") @db.VarChar(500)
+  reviewerName String?  @map("reviewer_name") @db.VarChar(80)
+  rating       Decimal? @db.Decimal(2, 1)
+  quoteText    String?  @map("quote_text") @db.VarChar(300)
+  displayOrder Int?     @map("display_order")
+
+  vpnProduct VpnProduct @relation(fields: [vpnProductId], references: [id], onDelete: Cascade)
+
+  @@map("vpn_testimonials")
+}
+
+model SiteConfig {
+  key       String    @id @db.VarChar(100)
+  value     Json?     @db.JsonB
+  updatedAt DateTime? @map("updated_at") @db.Timestamptz()
+  updatedBy String?   @map("updated_by") @db.Uuid
+
+  adminUser AdminUser? @relation(fields: [updatedBy], references: [id])
+
+  @@map("site_config")
+}
+
+model AdminUser {
+  id           String    @id @default(uuid()) @db.Uuid
+  email        String    @unique @db.VarChar(254)
+  passwordHash String?   @map("password_hash") @db.VarChar(255)
+  totpSecret   String?   @map("totp_secret") @db.VarChar(100)
+  totpEnabled  Boolean   @default(false) @map("totp_enabled")
+  lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz()
+  lastLoginIp  String?   @map("last_login_ip") @db.VarChar(45)
+  createdAt    DateTime? @map("created_at") @db.Timestamptz()
+
+  siteConfigs SiteConfig[]
+  auditLogs   AuditLog[]
+
+  @@map("admin_users")
+}
+
+model AuditLog {
+  id          BigInt      @id @default(autoincrement())
+  adminUserId String?     @map("admin_user_id") @db.Uuid
+  actionType  ActionType? @map("action_type")
+  entityType  String?     @map("entity_type") @db.VarChar(50)
+  entityId    String?     @map("entity_id") @db.Uuid
+  changes     Json?       @db.JsonB
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz()
+
+  adminUser AdminUser? @relation(fields: [adminUserId], references: [id])
+
+  @@map("audit_logs")
+}
+
+model AnalyticsEvent {
+  id           BigInt     @id @default(autoincrement())
+  eventType    EventType? @map("event_type")
+  vpnProductId String?    @map("vpn_product_id") @db.Uuid
+  pageUrl      String?    @map("page_url") @db.VarChar(500)
+  referrer     String?    @db.VarChar(500)
+  userAgent    String?    @map("user_agent") @db.VarChar(500)
+  ipHash       String?    @map("ip_hash") @db.Char(64)
+  countryCode  String?    @map("country_code") @db.Char(2)
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@map("analytics_events")
+}
