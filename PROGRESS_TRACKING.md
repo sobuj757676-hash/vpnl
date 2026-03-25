@@ -7,8 +7,8 @@ This document tracks the progress of the implementation plan based on `IMPLEMENT
 - [x] Set up Wildcard SSL/TLS certificates with auto-renewal via Let's Encrypt (DNS-01 challenge) (Note: Outside of codebase scope, assume pending config).
 - [x] Scaffold the backend API framework (Fastify/Next.js) - *Done using Next.js App Router API Routes structure*.
 - [x] Initialize the database (PostgreSQL) and implement the Prisma schema based on section 8 of the PRD.
-- [ ] Implement Super Admin authentication (Login, JWT session management, mandatory 2FA/TOTP).
-- [ ] Set up S3/R2 file storage buckets for image uploads.
+- [x] Implement Super Admin authentication (Login, JWT session management, mandatory 2FA/TOTP).
+- [x] Set up S3/R2 file storage buckets for image uploads.
 
 ## Phase 2: Super Admin Panel (Weeks 3-5)
 - [ ] Initialize the React + Vite frontend for `admin.abcd.com` (Or integrate into Next.js as `/admin` dashboard if preferred for monolithic approach).
