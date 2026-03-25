@@ -1,0 +1,1087 @@
+PRD-VPN-001
+Multi-Tenant VPN Portfolio Ecosystem
+Wildcard Subdomain Architecture  ·  Centralized Super Admin Control  ·  10/10 UI/UX Standard
+Version  2.0.0    |  Date  March 25, 2026    |  Status  Refined & Ready for Development
+Priority  CRITICAL — HIGH    |  Access  CONFIDENTIAL
+1. Executive Summary
+This document defines the complete, refined product requirements for a Multi-Tenant VPN Portfolio Ecosystem — a scalable web platform enabling a single organization to manage and showcase unlimited VPN products through a centralized Super Admin Panel, a world-class branded main website, and dynamically generated, conversion-optimized subdomain landing pages.
+The architecture leverages Wildcard DNS (*.abcd.com) to allow instantaneous creation of new VPN product storefronts without any server-level configuration changes. All content — branding, copy, legal documents, app-store links, and pricing — is managed exclusively through the Super Admin Panel and served dynamically from a shared database and codebase.
+Core Value Proposition:  One Super Admin Panel → unlimited individually branded VPN storefronts, zero DevOps friction, 10/10 UI/UX on every page.
+Key refinements in this version (v2.0.0):
+Role system simplified to Super Admin only — no Editor or Viewer roles.
+UI/UX elevated to a 10/10 standard: world-class design system for main site and all subdomain landing pages.
+Admin panel streamlined with a clean, modern interface exclusively for the Super Admin.
+All API endpoints consolidated under Super Admin authentication.
+2. Product Overview
+2.1  System Components
+The ecosystem consists of three tightly coupled components:
+Component
+URL / Location
+Primary Audience
+Main Company Website
+abcd.com
+General public, potential VPN users
+VPN Subdomain Landing Pages
+[vpn-name].abcd.com
+Targeted VPN product visitors
+Super Admin Panel
+admin.abcd.com (private)
+Super Admin only
+2.2  High-Level Architecture
+Layer
+Description
+DNS / CDN Layer
+Wildcard DNS record (*.abcd.com) routes all subdomain traffic to the same server. Cloudflare CDN caches static assets per subdomain.
+Reverse Proxy / Router
+Reads the Host header from the incoming request and extracts the subdomain slug (e.g., 'laion' from laion.abcd.com).
+Application Server (Next.js)
+Uses the slug to query the database for the corresponding VPN product record and server-renders the landing page template with fetched data.
+Database (PostgreSQL)
+Single source of truth for all VPN product data, branding tokens, legal content, analytics events, and Super Admin configuration.
+Super Admin Panel (React)
+Communicates with a REST API secured by JWT. All CRUD operations reflected immediately on the live site.
+2.3  Goals & Success Metrics
+Goal
+Key Metric
+Target
+Zero-touch subdomain provisioning
+Time to launch a new VPN landing page
+< 5 minutes from admin panel
+10/10 UI/UX on all pages
+Lighthouse UX Score + Design Audit
+100% — no generic UI
+Centralized content control
+Content updates without code deploys
+100% via Super Admin UI
+Scalability
+Number of VPN products supported
+Unlimited (DB-bound)
+Brand isolation
+Unique theme per VPN product
+100% — no shared visuals
+Legal compliance
+Per-product Privacy Policy & T&C
+Mandatory before publish
+Performance
+Lighthouse Performance Score
+≥ 90 all page types
+3. Stakeholders & User Personas
+3.1  Stakeholders
+Stakeholder
+Role & Interest
+Company Owner / CEO
+Strategic oversight; wants a scalable product catalog with minimal operational cost.
+Super Admin
+Full control of all content, branding, legal docs, and publishing for all VPN products.
+Developer Team
+Builds and maintains the platform; needs clean APIs and a maintainable codebase.
+End User (VPN Seeker)
+Discovers a VPN, evaluates features/pricing, and taps the app store download button.
+3.2  User Personas
+Persona A — Super Admin (Internal)
+Attribute
+Detail
+Name
+Rafiq — Product Operations Manager
+Goal
+Add a new VPN product and have its landing page live within minutes, without involving engineering.
+Pain Point
+Currently must open a DevOps ticket to create a new DNS record and deploy a new microsite.
+Success Criteria
+Fills form in Super Admin Panel → new subdomain landing page live immediately with polished UI.
+Persona B — End User (External)
+Attribute
+Detail
+Name
+Ayesha — Mobile-first Internet User
+Goal
+Find a reliable, affordable VPN app with a clean download link.
+Pain Point
+Lands on generic, cluttered pages that don't clearly show features or pricing.
+Success Criteria
+Arrives at a stunning, branded landing page, understands the VPN's value, and taps the app-store button within 30 seconds.
+4. UI/UX Design Standards (10/10 Mandate)
+This section is non-negotiable. Every public-facing page — abcd.com and all [vpn-name].abcd.com subdomains — must achieve a 10/10 design standard. This means world-class visual quality, micro-interaction polish, and a conversion-optimized user experience.
+4.1  Design System Foundation
+4.1.1  Typography Scale
+Role
+Size / Weight
+Usage
+Display
+72px / 800 Black
+Hero headlines — one per page
+H1
+48px / 700 Bold
+Section titles
+H2
+32px / 600 Semi-Bold
+Sub-sections
+H3
+24px / 600 Semi-Bold
+Card titles, feature names
+Body Large
+18px / 400 Regular
+Primary body text
+Body
+16px / 400 Regular
+Default body, descriptions
+Caption
+13px / 500 Medium
+Labels, tags, badges
+Note: Google Fonts: Use Inter or Plus Jakarta Sans as the default system font. Per-VPN font is applied via CSS custom properties injected server-side.
+4.1.2  Spacing & Layout
+Grid: 12-column CSS Grid with 24px gutter on desktop, 16px on tablet, 16px on mobile.
+Max content width: 1280px centered with auto margins.
+Section vertical rhythm: 120px padding top/bottom on desktop, 80px on mobile.
+Component spacing: 8px base unit — all spacing is a multiple of 8 (8, 16, 24, 32, 48, 64, 80, 96, 120).
+4.1.3  Color System
+Each VPN injects --primary, --secondary, --primary-dark, --primary-light as CSS custom properties at the :root.
+Contrast ratio: all text on colored backgrounds must meet WCAG AA (4.5:1 minimum). Critical CTAs must meet AAA (7:1).
+Dark mode: optional but architecture must support it. Token-based so it can be activated per VPN.
+4.1.4  Iconography
+Icon library: Phosphor Icons or Lucide — consistent stroke weight (1.5px), pixel-grid aligned.
+Custom SVG upload supported per VPN feature card — must auto-scale to 40×40px.
+No emoji as icons in production UI.
+4.2  Animation & Micro-Interactions
+All animations must feel fluid, purposeful, and never decorative for decoration's sake:
+Element
+Animation
+Timing
+Page entry
+Staggered fade-up (elements enter top-to-bottom)
+300ms ease-out, 60ms stagger
+CTA Buttons
+Scale 1.0 → 1.04 on hover; subtle glow (box-shadow) on primary color
+150ms ease
+Card hover
+translateY(-6px) + shadow elevation increase
+200ms ease-out
+Pricing toggle (M/Y)
+Smooth price number flip with counter animation
+400ms spring
+Screenshot carousel
+Inertia scroll with momentum; snap to center
+Physics-based
+Feature icons
+SVG path draw animation on scroll enter (intersection observer)
+800ms ease-in-out
+Stats counter
+Count-up animation when stat scrolls into view
+1200ms ease-out
+Nav on scroll
+Glass-morphism blur appears after 80px scroll
+200ms ease
+Note: Use Framer Motion (React) or CSS @keyframes — no heavy animation libraries. Respect prefers-reduced-motion media query; all animations must degrade gracefully to no-motion.
+4.3  Navigation Design
+4.3.1  Main Site (abcd.com) Navigation
+Sticky header with glass-morphism effect on scroll (backdrop-filter: blur(20px) + semi-transparent bg).
+Logo left-aligned; navigation links centered; primary CTA button right-aligned.
+Mobile: hamburger menu with full-screen slide-over panel, animated entrance.
+Active link underline indicator — animated sliding underline on hover/active state.
+4.3.2  Subdomain Page Navigation
+Minimal single-level nav: VPN Logo | Features | Pricing | Download.
+Download button in nav always visible — sticky floating button on mobile after hero scrolls past.
+Scroll-spy: active section highlighted in nav as user scrolls.
+4.4  Component Design Specifications
+4.4.1  CTA Buttons
+Variant
+Appearance
+Usage
+Primary
+Solid fill with VPN primary color, white text, 14px radius, subtle inner glow
+Download, Get Started
+Secondary
+Outlined border, transparent fill, primary color text
+Learn More, View All
+Ghost
+No border, underline on hover, muted color
+Tertiary actions
+App Store Badges
+Official Apple/Google asset with hover scale + shadow
+App download CTAs
+4.4.2  VPN Product Cards (Main Site Catalog)
+Frosted glass card effect: white bg, 1px border rgba(255,255,255,0.3), blur backdrop, subtle gradient overlay.
+VPN logo centered at top with soft drop shadow on logo image.
+Star rating rendered as filled SVG stars — not emoji — with decimal precision shown.
+Tag badges: pill-shaped with semi-transparent background tinted to VPN's primary color.
+Hover state: card lifts (translateY -8px), border glows with primary color, CTA button transitions from outline to filled.
+Card skeleton loaders shown during data fetch — animated shimmer gradient.
+4.4.3  Pricing Plan Cards
+Featured/Most Popular card: 4px top border in primary color, slight scale-up (1.04), floating badge.
+Monthly/Yearly toggle: pill toggle switch with animated sliding indicator; prices animate on toggle.
+Feature list: custom checkmark icons in primary color; unavailable features shown with muted X.
+All cards same height (align-items: stretch on grid container).
+4.4.4  App Screenshots Carousel
+Portrait screenshots: displayed at natural 9:16 ratio in a 3D perspective tilt on desktop (middle card centered, side cards tilted ±15deg).
+Landscape screenshots: full-width lightbox-capable gallery.
+Swipe gesture support on mobile (touch events + momentum).
+Dot indicators below carousel; click to jump to screenshot.
+4.4.5  Server Location Badge Cloud
+Country flag emoji rendered at 20×15px with fallback to ISO code text.
+Badges: pill shape, light bg, flag + country name; hover shows subtle fill tint.
+Headline stats displayed in large bold numbers with animated count-up on scroll enter.
+4.5  Mobile-First Responsive Rules
+Breakpoint
+Width
+Layout Behavior
+Mobile S
+320px+
+Single column, minimum viable layout. All CTAs full-width.
+Mobile L
+375px+
+Slight padding increase. App store badges side-by-side.
+Tablet
+768px+
+2-column grids. Nav shows partial links.
+Desktop
+1024px+
+3-column grids, full nav, pricing side-by-side.
+Wide
+1280px+
+Max content width locked at 1280px. Generous whitespace.
+4.6  Performance as a Design Requirement
+LCP (Largest Contentful Paint): < 1.5s — hero image must be preloaded with priority attribute.
+CLS (Cumulative Layout Shift): < 0.05 — all images must have explicit width/height; skeleton placeholders used.
+INP (Interaction to Next Paint): < 200ms — no heavy JS blocking the main thread.
+Font loading: font-display: swap with a fallback font stack matching Inter's metrics to prevent FOUT.
+Images: all uploads auto-converted to WebP + AVIF with <picture> srcset. Hero images lazy-blurred (blurhash placeholder).
+4.7  Accessibility (WCAG 2.1 Level AA — Non-Negotiable)
+All interactive elements reachable and operable via keyboard alone.
+Focus rings: visible, high-contrast (2px solid, offset 2px) — never removed with outline: none without replacement.
+aria-label on all icon-only buttons; alt text on all images (editable from Admin Panel).
+Color is never the only means of conveying information.
+Skip-to-main-content link at page top (visually hidden until focused).
+All form inputs in admin have associated <label> elements.
+5. Component 1 — Main Website (abcd.com)
+The main website is the public face of the company and the discovery hub for all VPN products. It must be visually stunning, fast, and conversion-optimized. The UI/UX must be indistinguishable from tier-1 SaaS product websites.
+5.1  Page Sections & Requirements
+5.1.1  Hero Section
+Field
+Requirement
+Headline
+Editable via Admin Panel; rich text; max 80 characters. Renders at Display size (72px).
+Sub-headline
+Editable via Admin Panel; max 160 characters. Renders at Body Large (18px).
+CTA Button
+Label, scroll-target, and style (primary/secondary) editable via Admin Panel.
+Hero Background
+Supports: gradient (customizable), full-bleed image with optional parallax, animated mesh gradient, or video loop. Configurable via Admin Panel.
+Visual Element
+Optional: animated 3D VPN globe/shield illustration or lottie animation. Toggleable.
+Trust Bar
+Row of company logos or 'As Seen In' badges below hero — editable list via Admin Panel.
+Responsive
+Full-screen height (100dvh) on desktop; auto-height on mobile. Content above fold always.
+5.1.2  VPN Product Catalog / Showcase
+Field
+Requirement
+Layout
+CSS Grid — 3 columns on desktop, 2 on tablet, 1 on mobile. Animated stagger on load.
+Card Content
+VPN logo, name, short description (max 160 chars), star rating (SVG stars), tag badges, CTA button.
+Card Design
+Glassmorphism card with hover lift. See Section 4.4.2.
+Sorting
+Super Admin sets display order (drag-and-drop or numeric priority field in Admin Panel).
+Filtering
+Tag-based filter tabs above grid (e.g., All, Free, Premium, New). Animated filter transition.
+Click Behavior
+Each card redirects to [vpn-name].abcd.com. Page transition animation on click.
+Data Source
+Dynamically fetched from database; no hardcoded VPN data in frontend.
+Loading State
+Animated shimmer skeleton cards while data loads.
+Empty State
+Custom illustration with configurable placeholder message if no VPN products published.
+5.1.3  Why Choose Us / Stats Bar
+Full-width section with 3–4 headline statistics (e.g., '50M+ Downloads', '10+ VPN Products', '150+ Countries').
+Each stat: large bold number + short label + icon. Counter animation on scroll enter.
+Background: primary brand color or dark gradient — high contrast, impactful.
+5.1.4  About Us Section
+Content (heading, body text, team photo) fully editable via Admin Panel.
+Supports rich text formatting (bold, lists, links).
+Two-column layout on desktop: text left, visual right. Stacks on mobile.
+Toggle section visibility from Admin Panel.
+5.1.5  Footer Section
+Field
+Requirement
+Contact Email
+Editable via Admin Panel; renders as mailto link.
+Social Links
+Admin can add/remove social platform icons + URLs. Official brand icons (SVG).
+Copyright Text
+Editable; auto-appends current year via JS.
+Navigation Links
+Multi-column footer nav editable via Admin Panel.
+Footer Design
+Dark background (near-black), logo top-left, columns of links, social row, copyright. Clean separation.
+5.2  Technical Requirements — Main Site
+Framework: Next.js 14+ App Router with React Server Components for SEO-friendly rendering.
+Styling: Tailwind CSS + CSS custom properties design token system.
+SEO: Meta title, description, Open Graph image, canonical URL — all editable from Admin Panel.
+Performance: Lighthouse score ≥ 90 across all four categories (Performance, Accessibility, Best Practices, SEO).
+Analytics: Page-view events fired to central analytics service on each load.
+Announcement Bar: dismissible top banner — toggle on/off, text, bg color, optional link — editable via Admin Panel.
+6. Component 2 — Subdomain Landing Pages ([vpn-name].abcd.com)
+Each subdomain is a dynamically rendered, conversion-focused single-product landing page. The same codebase is reused across all products — only the data from the database changes per slug. The design must match the UI/UX quality of leading VPN brands (NordVPN, ExpressVPN, Surfshark). Every element is purposeful.
+6.1  Slug Resolution Logic
+Request flow for subdomain resolution:
+Browser requests: laion.abcd.com
+Wildcard DNS routes the request to the application server.
+Server reads the Host header and extracts slug: 'laion'.
+Server queries: SELECT * FROM vpn_products WHERE subdomain_slug = 'laion' AND status = 'published'.
+If found → server-renders the landing page with product data. If not found → renders a branded 404 page.
+6.2  Landing Page Sections
+6.2.1  Hero / Above the Fold
+Field
+Requirement
+VPN Name + Tagline
+Pulled from DB. Tagline max 80 chars. Renders at Display size with per-VPN font.
+App Icon / Logo
+PNG/SVG uploaded via Admin Panel. Displayed at prominent size with soft shadow.
+Primary CTA
+Two buttons: 'Download on App Store' (Apple badge) + 'Get it on Google Play' (Google badge). Official badge assets used.
+Hero Background
+Per-VPN primary gradient derived from primary + secondary colors. Optional custom image or animated mesh.
+Social Proof Row
+Star rating (SVG stars), download count text (e.g., '1M+ Downloads'), optional award badge.
+Device Mockup
+Optional: hero visual of the app inside a phone/device mockup (image uploaded via Admin Panel).
+Responsive
+100dvh hero on desktop. CTA buttons stack vertically on mobile.
+6.2.2  App Screenshots Gallery
+Admin can upload up to 8 screenshots per VPN product.
+3D perspective carousel on desktop: center card full-size, flanking cards at 15deg tilt and 90% scale.
+Mobile: horizontal swipe carousel with momentum and snap points.
+Portrait (9:16) and landscape (16:9) screenshots both supported — auto-layout adapts.
+Alt text for each screenshot editable via Admin Panel (WCAG compliance).
+Lightbox: tap/click any screenshot to view full-screen with prev/next navigation.
+6.2.3  Features Section
+Field
+Requirement
+Feature Items
+Up to 12 feature cards. Each: icon (40×40), title (max 50 chars), description (max 100 chars).
+Icon Design
+From Phosphor Icons library OR custom SVG upload. Color: VPN primary color.
+Layout
+3-column grid (desktop), 2-column (tablet), 1-column (mobile).
+Card Animation
+Feature cards stagger-fade-up on scroll enter (intersection observer).
+Icon Animation
+SVG path draw on scroll enter. Hover: gentle pulse on icon.
+6.2.4  Server Locations
+Admin defines list of country names with ISO code for flag rendering.
+Headline stat: 'X+ Servers in Y Countries' — large display numbers with count-up animation.
+Countries displayed as an interactive badge cloud: hover to highlight. Filter by region (optional).
+Optional: minimal SVG world map with country dots highlighted.
+6.2.5  Pricing Plans
+Field
+Requirement
+Plan Card Fields
+Name, price (amount + currency + billing period), feature list, Featured badge, CTA.
+Number of Plans
+1–5 plans per VPN.
+Billing Toggle
+Monthly/Yearly pill toggle. Prices animate on toggle. Savings badge auto-calculated and shown.
+Featured Plan
+Admin designates one plan as 'Most Popular'. Receives: color top-border, floating badge, slight card scale-up.
+CTA
+Label and URL per plan. Button style inherits VPN primary color.
+Currency
+Per-plan currency dropdown (USD, EUR, BDT, etc.).
+6.2.6  Trust & Testimonials Section
+Optional section: Admin can add 1–6 testimonial cards (avatar, name, rating, quote text).
+Displayed in a 3-column grid (desktop) or horizontal scroll carousel (mobile).
+Press logos row: Admin uploads 1–8 publication/award logos (greyscale, hover to color).
+6.2.7  Legal Pages (Privacy Policy & Terms & Conditions)
+Each subdomain exposes /privacy-policy and /terms routes.
+Content is a per-VPN rich-text field stored in the database — full formatting support.
+Footer of every subdomain landing page links to both legal pages.
+Legal pages display the VPN's own branding (logo + primary color accent in header).
+Last-updated date shown automatically (derived from DB record's updated_at timestamp).
+6.3  Unique Branding System
+Token
+Source
+Applied To
+Primary Color (Hex)
+Admin Panel per VPN
+Hero bg, CTA buttons, section accents, active states
+Secondary Color (Hex)
+Admin Panel per VPN
+Feature icons, pricing highlights, gradients
+VPN Logo
+File upload in Admin Panel
+Navbar, hero, legal pages, favicon, OG image
+Font Family
+Dropdown (Google Fonts) in Admin Panel
+All text on the subdomain
+Meta Title Template
+Admin Panel text field
+Browser tab, SEO, social share
+Favicon
+Auto-generated from logo OR separate upload
+Browser tab icon
+Hero Background Style
+Radio: Solid / Gradient / Custom Image
+Full hero section background
+Note: Theme tokens injected as CSS custom properties at :root during SSR — zero Flash of Unstyled Content (FOUC). Primary color automatically generates 5-step shade scale (100–900) for design flexibility.
+7. Component 3 — Super Admin Panel (admin.abcd.com)
+The Admin Panel is the exclusive control room for the entire ecosystem. Only one role exists: Super Admin. Super Admin has full, unrestricted access to all features. The UI is clean, modern, and professional — built to be fast and intuitive for daily operational use.
+7.1  Authentication
+Feature
+Requirement
+Login
+Email + password. Passwords hashed with bcrypt (cost factor 12+).
+2FA (TOTP)
+Mandatory for all Super Admin accounts. Google Authenticator / Authy compatible.
+Session Management
+JWT-based; access token (15 min TTL) + refresh token (7 days) stored in httpOnly, Secure, SameSite=Strict cookies.
+Rate Limiting
+Max 5 failed login attempts per 15 minutes per IP. Account temporarily locked after 10 failures in 1 hour.
+Session Timeout
+Auto-logout after 60 minutes of inactivity. Configurable by Super Admin (30–120 min).
+Audit Log
+Every create/update/delete action logged with: timestamp, actor email, entity type, entity ID, changed fields (before/after).
+New Device Alert
+Email notification sent to Super Admin on login from unrecognized IP/device fingerprint.
+Session Revocation
+Super Admin can view and terminate all active sessions from the Security Settings page.
+7.2  Global Dashboard
+7.2.1  Key Performance Indicators (KPIs)
+Metric
+Aggregation
+Source
+Total Page Views (Main Site)
+Daily / Weekly / Monthly
+analytics_events table
+Total Subdomain Visits
+Per VPN product, time-ranged
+analytics_events table
+App Store Click-throughs
+Per VPN, per platform (iOS/Android)
+analytics_events table
+Active VPN Products
+Count
+vpn_products table
+Draft VPN Products
+Count
+vpn_products table
+Top Performing VPN
+By page views this month
+analytics_events table
+7.2.2  Dashboard Charts
+Line chart: Traffic trend over the last 30 days (main site vs. top 5 subdomains).
+Bar chart: App store clicks per VPN product (last 7 days).
+Doughnut chart: Traffic share by VPN subdomain.
+Table: Top 10 most visited pages with visit count and click-through rate.
+7.3  VPN Product Management
+7.3.1  VPN Product List View
+Paginated table (20 per page): Logo thumbnail, Name, Subdomain slug, Status (Draft/Published), Last updated.
+Inline status toggle (Publish / Unpublish) with confirmation modal.
+Search bar (by name or slug) + status filter dropdown.
+Sortable columns: Name, Date Created, Date Updated.
+Bulk actions: Publish selected, Unpublish selected, Delete selected.
+7.3.2  Add / Edit VPN Product — Tabbed Form
+The form is organized into 7 tabs:
+Tab
+Contents
+Tab 1 — General Info
+VPN Name, Subdomain Slug (auto-slugified + unique check), Short Description, Long Description (rich text), App Icon/Logo upload, Display Order, Tags, Status toggle.
+Tab 2 — App Store Links
+Google Play URL (validated), App Store URL (validated), Show/hide badge toggles, Download Count display text, App Rating (1.0–5.0).
+Tab 3 — Theme & Branding
+Primary Color (hex picker), Secondary Color (hex picker), Font Family (curated Google Fonts dropdown), Hero Background Style (solid/gradient/image), App Screenshots (up to 8, drag-to-reorder), Favicon upload.
+Tab 4 — Features
+Dynamic list: up to 12 items. Each: Icon selector + Title (50 chars) + Description (100 chars). Drag-to-reorder.
+Tab 5 — Server Locations
+Country multi-select with ISO flags. Headline stat fields: 'X+ Servers' and 'in Y Countries'.
+Tab 6 — Pricing Plans
+Up to 5 plans. Each: Name, Monthly Price, Yearly Price, Currency, Feature list (up to 10 bullets), CTA Label, CTA URL, Is Featured flag. Drag-to-reorder.
+Tab 7 — Legal Content
+Privacy Policy (rich text editor), Terms & Conditions (rich text editor), Effective Date, Legal Contact Email.
+7.4  Main Site Content Management
+Page Section
+Editable Fields
+Hero
+Headline, sub-headline, CTA label, hero background (color/gradient/image/video).
+Stats Bar
+3–4 stat items: number, label, icon. Toggle visibility.
+About Us
+Section heading, body rich text, optional team image. Toggle visibility.
+SEO / Meta
+Meta title, meta description, Open Graph image, canonical URL.
+Contact
+Email, phone (optional), address (optional), social links (platform + URL).
+Footer
+Copyright text, footer navigation link groups (label + URL).
+Announcement Bar
+Toggle on/off; text content; background color; link URL (optional).
+7.5  Analytics Dashboard
+Date range picker: Last 7 / 30 / 90 days or custom range.
+Per-VPN drill-down: click any VPN in the summary table to see its individual analytics.
+Export: CSV export of analytics events for any date range.
+All analytics are privacy-preserving: IP addresses are SHA-256 hashed; no PII stored.
+7.6  Audit Log
+Full table of all admin actions: Timestamp, Action Type (Create/Update/Delete/Publish), Entity, Details summary.
+Filterable by date range and action type.
+Read-only — cannot be deleted or modified.
+7.7  Admin Panel UI/UX Standards
+Design language: Clean, minimal SaaS admin aesthetic. Reference: Linear, Vercel, Raycast dashboards.
+Sidebar navigation: collapsible, icon + label. Active state clearly indicated.
+Color mode: Light mode default; dark mode toggle available.
+Toast notifications: success/error/warning feedback on every action (top-right, auto-dismiss 4s).
+Unsaved changes guard: browser beforeunload warning if Super Admin navigates away from an unsaved form.
+Loading states: skeleton screens for all data-fetch views; button spinners on form submit.
+Responsive: usable on tablet (1024px+) and desktop. Mobile is de-prioritized for admin panel.
+8. Database Schema & Data Model
+8.1  Core Tables
+8.1.1  vpn_products
+Column
+Type & Notes
+id
+UUID, primary key
+name
+VARCHAR(60), NOT NULL
+subdomain_slug
+VARCHAR(60), NOT NULL, UNIQUE, indexed
+short_description
+VARCHAR(160)
+long_description
+TEXT (HTML from rich text editor)
+logo_url
+VARCHAR(500) — CDN URL
+favicon_url
+VARCHAR(500)
+primary_color
+CHAR(7) — hex, e.g., #1A56DB
+secondary_color
+CHAR(7)
+font_family
+VARCHAR(100)
+hero_bg_style
+ENUM('solid','gradient','image','video')
+hero_bg_value
+VARCHAR(500) — hex, gradient CSS, or CDN URL
+play_store_url
+VARCHAR(500)
+app_store_url
+VARCHAR(500)
+app_rating
+DECIMAL(2,1)
+download_count_display
+VARCHAR(20)
+show_play_badge
+BOOLEAN, default TRUE
+show_app_badge
+BOOLEAN, default TRUE
+device_mockup_url
+VARCHAR(500) — optional hero device image
+meta_title
+VARCHAR(70)
+meta_description
+VARCHAR(160)
+status
+ENUM('draft','published'), default 'draft'
+display_order
+INTEGER, default 0
+tags
+JSONB — array of tag strings
+created_at
+TIMESTAMP WITH TIME ZONE, default NOW()
+updated_at
+TIMESTAMP WITH TIME ZONE, auto-updated
+8.1.2  vpn_features
+Column
+Type & Notes
+id
+UUID, primary key
+vpn_product_id
+UUID, FK → vpn_products.id, ON DELETE CASCADE
+icon_name
+VARCHAR(100) — Phosphor icon name or 'custom'
+icon_svg_url
+VARCHAR(500) — CDN URL if custom SVG uploaded
+title
+VARCHAR(50)
+description
+VARCHAR(100)
+display_order
+INTEGER
+8.1.3  vpn_pricing_plans
+Column
+Type & Notes
+id
+UUID, primary key
+vpn_product_id
+UUID, FK → vpn_products.id, ON DELETE CASCADE
+plan_name
+VARCHAR(40)
+monthly_price
+DECIMAL(10,2)
+yearly_price
+DECIMAL(10,2)
+currency
+CHAR(3) — ISO 4217, e.g., USD
+features_list
+JSONB — array of feature strings
+cta_label
+VARCHAR(40), default 'Get Started'
+cta_url
+VARCHAR(500)
+is_featured
+BOOLEAN, default FALSE
+display_order
+INTEGER
+8.1.4  vpn_legal
+Column
+Type & Notes
+id
+UUID, primary key
+vpn_product_id
+UUID, FK → vpn_products.id, ON DELETE CASCADE
+privacy_policy_html
+TEXT
+terms_html
+TEXT
+effective_date
+DATE
+contact_email
+VARCHAR(254)
+updated_at
+TIMESTAMP WITH TIME ZONE
+8.1.5  vpn_screenshots
+Column
+Type & Notes
+id
+UUID, primary key
+vpn_product_id
+UUID, FK → vpn_products.id, ON DELETE CASCADE
+image_url
+VARCHAR(500) — CDN URL (WebP)
+alt_text
+VARCHAR(200)
+orientation
+ENUM('portrait','landscape')
+display_order
+INTEGER
+8.1.6  vpn_testimonials
+Column
+Type & Notes
+id
+UUID, primary key
+vpn_product_id
+UUID, FK → vpn_products.id, ON DELETE CASCADE
+avatar_url
+VARCHAR(500)
+reviewer_name
+VARCHAR(80)
+rating
+DECIMAL(2,1)
+quote_text
+VARCHAR(300)
+display_order
+INTEGER
+8.1.7  site_config (Main Site CMS)
+Column
+Type & Notes
+key
+VARCHAR(100), primary key
+value
+JSONB — flexible value store for any field type
+updated_at
+TIMESTAMP WITH TIME ZONE
+updated_by
+UUID — FK → admin_users.id
+8.1.8  admin_users
+Column
+Type & Notes
+id
+UUID, primary key
+email
+VARCHAR(254), UNIQUE, NOT NULL
+password_hash
+VARCHAR(255) — bcrypt
+totp_secret
+VARCHAR(100) — encrypted at rest
+totp_enabled
+BOOLEAN, default FALSE
+last_login_at
+TIMESTAMP WITH TIME ZONE
+last_login_ip
+VARCHAR(45) — IPv6 compatible
+created_at
+TIMESTAMP WITH TIME ZONE
+8.1.9  audit_logs
+Column
+Type & Notes
+id
+BIGSERIAL, primary key
+admin_user_id
+UUID, FK → admin_users.id
+action_type
+ENUM('create','update','delete','publish','unpublish','login','logout')
+entity_type
+VARCHAR(50) — e.g., 'vpn_product', 'site_config'
+entity_id
+UUID, nullable
+changes
+JSONB — {field: {before, after}} diff
+created_at
+TIMESTAMP WITH TIME ZONE, default NOW()
+8.1.10  analytics_events
+Column
+Type & Notes
+id
+BIGSERIAL, primary key
+event_type
+ENUM('page_view','app_store_click','play_store_click','pricing_click')
+vpn_product_id
+UUID, nullable (null = main site event)
+page_url
+VARCHAR(500)
+referrer
+VARCHAR(500)
+user_agent
+VARCHAR(500)
+ip_hash
+CHAR(64) — SHA-256 of IP (no PII)
+country_code
+CHAR(2)
+created_at
+TIMESTAMP WITH TIME ZONE, default NOW()
+9. API Specifications
+9.1  Public API (consumed by main site & subdomains, no auth required)
+Method
+Endpoint
+Description
+GET
+/api/v1/products
+List all published VPN products (catalog for main site)
+GET
+/api/v1/products/:slug
+Get full product data by subdomain slug
+GET
+/api/v1/products/:slug/legal
+Get Privacy Policy & T&C HTML for a VPN
+GET
+/api/v1/site-config
+Get main site CMS content
+POST
+/api/v1/analytics/event
+Record an analytics event (rate-limited: 60 req/min per IP)
+9.2  Admin API (all endpoints — Super Admin JWT required)
+Method
+Endpoint
+Description
+POST
+/api/admin/auth/login
+Authenticate — returns JWT access + refresh tokens
+POST
+/api/admin/auth/refresh
+Refresh access token using httpOnly refresh token cookie
+POST
+/api/admin/auth/logout
+Revoke current session / refresh token
+GET
+/api/admin/products
+List all VPN products (incl. drafts), paginated
+POST
+/api/admin/products
+Create new VPN product
+PUT
+/api/admin/products/:id
+Update VPN product (any/all tabs)
+PATCH
+/api/admin/products/:id/status
+Publish or unpublish a product
+DELETE
+/api/admin/products/:id
+Permanently delete a VPN product
+POST
+/api/admin/products/:id/screenshots
+Upload screenshot(s) for a VPN
+DELETE
+/api/admin/products/:id/screenshots/:sid
+Delete a screenshot
+PATCH
+/api/admin/products/:id/screenshots/reorder
+Reorder screenshots
+GET
+/api/admin/analytics/summary
+Get dashboard KPI summary
+GET
+/api/admin/analytics/events
+Get analytics events (paginated, filterable)
+GET
+/api/admin/analytics/export
+Export analytics as CSV
+PUT
+/api/admin/site-config
+Update main site CMS fields
+GET
+/api/admin/audit-log
+Get audit log entries (paginated, filterable)
+GET
+/api/admin/users
+List Super Admin accounts
+POST
+/api/admin/users
+Create a new Super Admin account
+DELETE
+/api/admin/users/:id
+Delete a Super Admin account
+GET
+/api/admin/sessions
+List active sessions for current Super Admin
+DELETE
+/api/admin/sessions/:id
+Revoke a specific session
+Note: All admin API responses return structured JSON: { success: boolean, data: any, error?: string, pagination?: { page, limit, total } }. All admin routes require Bearer JWT in Authorization header. HTTPS only.
+10. Infrastructure & Deployment
+10.1  DNS Configuration
+Note: A wildcard DNS record (*.abcd.com → server IP) must be configured before any subdomain can be served. One-time setup at the DNS provider level.
+DNS Record
+Details
+A Record: abcd.com
+Points to the server's public IP address.
+A Record: *.abcd.com
+Wildcard — catches all subdomains; same IP.
+A Record: www.abcd.com
+301 redirect → abcd.com.
+A Record: admin.abcd.com
+Points to same server; handled by Next.js/reverse proxy routing.
+TXT Record (SPF)
+For transactional email sender verification.
+10.2  Recommended Technology Stack
+Layer
+Technology
+Frontend Framework
+Next.js 14+ (App Router) — SSR per subdomain with Server Components.
+Styling
+Tailwind CSS + CSS custom properties for per-VPN theming.
+Animation
+Framer Motion for page transitions and scroll animations.
+Admin Panel
+React + Vite + shadcn/ui component library. Dark mode support.
+Backend API
+Node.js with Fastify (or Next.js API routes for simpler setup).
+Database
+PostgreSQL 15+ with Prisma ORM.
+File Storage
+AWS S3 or Cloudflare R2. Auto-convert uploads to WebP/AVIF.
+CDN
+Cloudflare CDN. Static assets + edge caching per subdomain.
+Analytics
+Custom in-DB solution (Section 8.1.10) OR PostHog self-hosted.
+Email (Admin)
+Resend or SendGrid for password reset and login alerts.
+Deployment
+Vercel (frontend) + Railway/Render (API + DB) or Docker Compose on VPS.
+SSL/TLS
+Let's Encrypt wildcard certificate via DNS-01 challenge covering *.abcd.com.
+10.3  SSL / HTTPS for Wildcard Subdomains
+A standard single-domain SSL cert does NOT cover *.abcd.com.
+Must obtain a Wildcard TLS Certificate using DNS-01 challenge (Certbot + Cloudflare DNS plugin).
+Certificate covers both abcd.com and *.abcd.com.
+Auto-renewal configured via cron or ACME client. Alert 30 days before expiry.
+11. Non-Functional Requirements
+Category
+Requirement
+Target / Metric
+Performance
+Time to First Byte (TTFB)
+< 300ms server-side
+Performance
+Largest Contentful Paint (LCP)
+< 1.5s
+Performance
+Cumulative Layout Shift (CLS)
+< 0.05
+Performance
+Lighthouse Performance Score
+≥ 90 on all page types
+UI/UX Quality
+Design Audit Score
+10/10 — world-class standard
+Scalability
+Concurrent VPN products
+Unlimited (database capacity)
+Scalability
+Concurrent admin sessions
+Up to 50 simultaneous sessions
+Availability
+Monthly Uptime SLA
+99.9%
+Security
+Admin panel access
+HTTPS only; 2FA mandatory; rate-limited login
+Security
+Analytics data privacy
+IP addresses SHA-256 hashed; no PII stored
+Security
+File uploads
+MIME validation; ClamAV or cloud virus scan; size limits
+SEO
+Crawlability
+All public pages crawlable; sitemap.xml auto-generated per subdomain
+Accessibility
+WCAG compliance
+WCAG 2.1 Level AA on all public-facing pages
+Browser Support
+Cross-browser
+Chrome, Firefox, Safari, Edge — last 2 major versions
+Mobile
+Responsive design
+All pages fully functional on screens ≥ 320px wide
+Animation
+Motion preference
+All animations respect prefers-reduced-motion
+Localization
+Language support
+English (default). i18n-ready architecture for expansion.
+12. Milestones & Timeline
+Phase
+Deliverable
+Duration
+Key Dependencies
+Phase 1 — Foundation
+DB schema, API scaffolding, Super Admin auth (2FA), wildcard DNS & SSL setup
+2 weeks
+DevOps access, domain control
+Phase 2 — Admin Panel
+Full Super Admin panel UI/UX, VPN product CRUD, image uploads, subdomain management
+3 weeks
+Phase 1 complete
+Phase 3 — Design System
+Global design system, component library, animation framework, Figma handoff
+1 week
+Phase 1 complete
+Phase 4 — Subdomain Pages
+Dynamic landing page renderer, full theming system, all page sections, carousels, animations
+3 weeks
+Phase 2 & 3 complete
+Phase 5 — Main Website
+Main site with catalog, hero CMS, about, stats bar, footer — 10/10 UI/UX
+2 weeks
+Phase 2 & 3 complete
+Phase 6 — Analytics
+Event tracking, dashboard charts, KPI cards, audit log, CSV export
+1 week
+Phase 4 & 5 live
+Phase 7 — QA & Launch
+Cross-browser testing, accessibility audit, Lighthouse optimization, staging → production
+1 week
+All phases complete
+Total Estimated Duration: 13 weeks (~3 months) with a 2-developer + 1-designer team.
+13. Risks & Mitigations
+Risk
+Impact
+Mitigation Strategy
+Wildcard SSL renewal failure — all subdomains go HTTPS-broken
+Critical
+Auto-renewal with monitoring alerts 30 days before expiry. Test in staging first.
+Subdomain slug collision (duplicate slug attempt)
+High
+UNIQUE constraint at DB level + real-time slug availability check via debounced API call in admin form.
+Poor SEO for dynamically rendered subdomain pages
+Medium
+Next.js SSR/ISR — full HTML with meta tags server-rendered. Per-subdomain sitemaps submitted to Google Search Console.
+Admin panel performance degradation with 100+ VPN products
+Medium
+Server-side pagination, lazy loading, indexed DB queries on subdomain_slug and status columns.
+Uploaded images slowing page load
+Medium
+Auto-convert to WebP/AVIF, generate responsive srcset sizes, serve via CDN with correct cache headers.
+GDPR / privacy compliance gap in analytics
+High
+Hash IP addresses (SHA-256); no PII collected; cookie consent banner; Data Processing Agreement in legal docs.
+Super Admin account compromise
+Critical
+Mandatory 2FA (TOTP); full audit log; session revocation endpoint; email alert on new device login.
+Animation causing performance regression
+Medium
+Intersection Observer for scroll-triggered animations; will-change hints; GPU-composited transforms only; reduce-motion respected.
+FOUC (Flash of Unstyled Content) on theming
+Medium
+CSS custom properties injected server-side during SSR. Font preloaded with font-display: swap.
+14. Open Questions & Decisions Pending
+#
+Question
+Owner
+Q1
+Will each VPN product need its own payment gateway integration, or is the CTA always an external link to the app store / payment page?
+Product Manager
+Q2
+Is the Admin Panel access restricted to a single IP/VPN (office network), or accessible from anywhere with 2FA?
+CTO / Security
+Q3
+Should subdomain pages support multi-language content (e.g., English + Bengali), or English only for V1?
+Product Manager
+Q4
+Is there a requirement for a public-facing blog or news section on the main site?
+Marketing
+Q5
+Should the system support custom domain mapping (e.g., laion.com pointing to the Laion VPN page) in V2?
+Engineering / Product
+Q6
+Preferred analytics solution: custom in-DB, PostHog self-hosted, or GA4?
+Product Manager
+Q7
+A/B testing requirement on landing page hero sections?
+Marketing
+Q8
+Testimonials section: real reviews or manually entered by Super Admin?
+Product Manager
+Q9
+Device mockup images in hero: provided by Super Admin upload or auto-generated from screenshots?
+Design / Engineering
+15. Glossary
+Term
+Definition
+Wildcard DNS
+A DNS record matching any hostname within a domain (*.abcd.com matches anything.abcd.com).
+Subdomain Slug
+The unique identifier in a subdomain URL (e.g., 'laion' in laion.abcd.com). URL-safe, lowercase.
+Super Admin
+The sole admin role in this system. Has full unrestricted access to all features.
+Multi-tenant
+One application instance serving multiple clients (tenants) with isolated data and configuration.
+SSR (Server-Side Rendering)
+HTML generated on the server per request, improving SEO and initial load time.
+ISR (Incremental Static Regeneration)
+Next.js feature: static pages regenerated in background at a defined interval, no redeploy.
+DNS-01 Challenge
+ACME protocol method used by Let's Encrypt to verify domain ownership via DNS TXT record — required for wildcard certificates.
+FOUC (Flash of Unstyled Content)
+Brief period during page load where content appears without its intended styles.
+CTA (Call to Action)
+A UI element (usually a button) prompting the user to take a specific action.
+JWT (JSON Web Token)
+Compact, URL-safe token format for securely transmitting authentication claims between parties.
+WCAG
+Web Content Accessibility Guidelines — international standards for web accessibility.
+LCP (Largest Contentful Paint)
+Core Web Vital: time for the largest visible content element to load. Target < 1.5s.
+CLS (Cumulative Layout Shift)
+Core Web Vital: measure of visual stability. Target < 0.05.
+Glassmorphism
+UI design style using frosted glass effect: translucent backgrounds with blur, soft borders, shadow.
+Blurhash
+Compact representation of a placeholder blurred image shown while the real image loads.
+TOTP (Time-based One-Time Password)
+2FA method generating a rotating 6-digit code every 30 seconds (Google Authenticator).
+16. Document Approval
+This PRD requires sign-off from the following stakeholders before development begins:
+Role
+Name
+Signature
+Date
+Product Manager
+________________________
+Tech Lead / CTO
+________________________
+Design Lead
+________________________
+Legal / Compliance
+________________________
+CONFIDENTIAL  |  PRD-VPN-001  v2.0.0  |  Multi-Tenant VPN Portfolio Ecosystem
