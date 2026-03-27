@@ -25,16 +25,17 @@ import { Shield, Home, Settings, Users, Server, FileText, BarChart3, Lock } from
 
 import Dashboard from "./pages/Dashboard"
 import VpnProducts from "./pages/VpnProducts"
+import VpnProductForm from "./pages/VpnProductForm"
 
 export default function App() {
   const location = useLocation()
 
   const getPageTitle = () => {
-    switch (location.pathname) {
-      case "/": return "Dashboard"
-      case "/vpn-products": return "VPN Products"
-      default: return "Admin"
-    }
+    if (location.pathname === "/") return "Dashboard"
+    if (location.pathname === "/vpn-products") return "VPN Products"
+    if (location.pathname === "/vpn-products/new") return "New VPN Product"
+    if (location.pathname.startsWith("/vpn-products/")) return "Edit VPN Product"
+    return "Admin"
   }
 
   return (
@@ -58,7 +59,7 @@ export default function App() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="VPN Products" isActive={location.pathname === "/vpn-products"}>
+                <SidebarMenuButton tooltip="VPN Products" isActive={location.pathname.startsWith("/vpn-products")}>
                   <Link to="/vpn-products">
                     <Server className="mr-2 h-4 w-4" />
                     <span>VPN Products</span>
@@ -124,6 +125,8 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/vpn-products" element={<VpnProducts />} />
+              <Route path="/vpn-products/new" element={<VpnProductForm />} />
+              <Route path="/vpn-products/:id" element={<VpnProductForm />} />
             </Routes>
           </main>
         </SidebarInset>
