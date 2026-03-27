@@ -14,7 +14,7 @@ This document tracks the progress of the implementation plan based on `IMPLEMENT
 - [x] Initialize the React + Vite frontend for `admin.abcd.com` (Or integrate into Next.js as `/admin` dashboard if preferred for monolithic approach).
 - [x] Integrate `shadcn/ui` and build the global dashboard layout (sidebar, header).
 - [x] Implement VPN Product CRUD operations (List, Create, Edit, Delete, Publish/Unpublish status toggles).
-- [ ] Build the 7-tab VPN Product Form (General Info, App Store Links, Theme & Branding, Features, Server Locations, Pricing Plans, Legal Content).
+- [x] Build the 7-tab VPN Product Form (General Info, App Store Links, Theme & Branding, Features, Server Locations, Pricing Plans, Legal Content).
 - [ ] Implement secure file uploads with MIME validation and auto-conversion (to WebP/AVIF) for logos, device mockups, and screenshots (drag-to-reorder).
 - [ ] Implement main site CMS update endpoints.
 

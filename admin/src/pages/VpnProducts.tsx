@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
 import { Plus, Edit, Trash2, Globe, Server as ServerIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/table"
 
 export default function VpnProducts() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -78,9 +80,11 @@ export default function VpnProducts() {
           <h2 className="text-2xl font-bold tracking-tight">VPN Products</h2>
           <p className="text-muted-foreground">Manage your portfolio of VPN applications.</p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" /> Add Product
-        </Button>
+        <Link to="/vpn-products/new">
+          <Button>
+            <Plus className="mr-2 h-4 w-4" /> Add Product
+          </Button>
+        </Link>
       </div>
 
       <div className="rounded-md border bg-card">
@@ -95,9 +99,11 @@ export default function VpnProducts() {
             <p className="text-muted-foreground mb-4 max-w-sm">
               Get started by creating your first VPN product to manage its features, pricing, and content.
             </p>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" /> Add Product
-            </Button>
+            <Link to="/vpn-products/new">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" /> Add Product
+              </Button>
+            </Link>
           </div>
         ) : (
           <Table>
@@ -166,10 +172,12 @@ export default function VpnProducts() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Edit</span>
-                      </Button>
+                      <Link to={`/vpn-products/${product.id}`}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Edit className="h-4 w-4" />
+                          <span className="sr-only">Edit</span>
+                        </Button>
+                      </Link>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => handleDelete(product.id)}>
                         <Trash2 className="h-4 w-4" />
                         <span className="sr-only">Delete</span>
