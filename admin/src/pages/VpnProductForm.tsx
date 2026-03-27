@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { ArrowLeft, Save, Loader2 } from "lucide-react"
+import { ArrowLeft, Save, Loader2, GripVertical, Trash2, UploadCloud } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -20,6 +20,25 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
+import { FileUpload } from "@/components/FileUpload"
+
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
 const productFormSchema = z.object({
   name: z.string().min(2, { message: "Product name must be at least 2 characters." }).max(60),
   subdomainSlug: z.string().min(2).max(60).regex(/^[a-z0-9-]+$/, {
@@ -31,9 +50,52 @@ const productFormSchema = z.object({
   secondaryColor: z.string().optional(),
   playStoreUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
   appStoreUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
+  logoUrl: z.string().optional(),
+  deviceMockupUrl: z.string().optional(),
 })
 
 type ProductFormValues = z.infer<typeof productFormSchema>
+
+interface Screenshot {
+  id: string;
+  imageUrl: string;
+  altText: string;
+  displayOrder: number;
+}
+
+function SortableItem({ item, onDelete }: { item: Screenshot, onDelete: (id: string) => void }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="relative group border rounded-md p-2 bg-white flex flex-col items-center">
+      <div {...attributes} {...listeners} className="absolute top-2 left-2 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 p-1 rounded">
+        <GripVertical className="h-4 w-4 text-muted-foreground" />
+      </div>
+      <Button
+        type="button"
+        variant="destructive"
+        size="icon"
+        className="absolute top-2 right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+        onClick={() => onDelete(item.id)}
+      >
+        <Trash2 className="h-3 w-3" />
+      </Button>
+      <img src={item.imageUrl} alt={item.altText} className="h-32 object-contain rounded" />
+      <span className="text-xs text-muted-foreground mt-2 truncate max-w-full">{item.altText || 'Screenshot'}</span>
+    </div>
+  );
+}
 
 export default function VpnProductForm() {
   const { id } = useParams<{ id: string }>()
@@ -42,6 +104,15 @@ export default function VpnProductForm() {
 
   const [loading, setLoading] = useState(isEditing)
   const [saving, setSaving] = useState(false)
+  const [screenshots, setScreenshots] = useState<Screenshot[]>([])
+  const [uploadingScreenshot, setUploadingScreenshot] = useState(false)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
@@ -54,6 +125,8 @@ export default function VpnProductForm() {
       secondaryColor: "",
       playStoreUrl: "",
       appStoreUrl: "",
+      logoUrl: "",
+      deviceMockupUrl: "",
     },
   })
 
@@ -78,7 +151,12 @@ export default function VpnProductForm() {
           secondaryColor: data.product.secondaryColor || "",
           playStoreUrl: data.product.playStoreUrl || "",
           appStoreUrl: data.product.appStoreUrl || "",
+          logoUrl: data.product.logoUrl || "",
+          deviceMockupUrl: data.product.deviceMockupUrl || "",
         })
+        if (data.product.screenshots) {
+          setScreenshots(data.product.screenshots)
+        }
       }
     } catch (error) {
       console.error('Error fetching VPN product:', error)
@@ -100,7 +178,7 @@ export default function VpnProductForm() {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-user-id': 'admin', // Mock admin ID for audit logs until auth is wired
+          'x-admin-user-id': 'admin',
         },
         body: JSON.stringify(data),
       })
@@ -111,7 +189,7 @@ export default function VpnProductForm() {
         if (!isEditing) {
           navigate(`/vpn-products/${result.product.id}`)
         } else {
-          // Could show a toast here
+          // Success toast could go here
         }
       } else {
         console.error('Failed to save:', result.error)
@@ -123,6 +201,92 @@ export default function VpnProductForm() {
       console.error('Error saving product:', error)
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleScreenshotUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !id) return;
+
+    setUploadingScreenshot(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', `vpn-products/${id}/screenshots`);
+
+    try {
+      // 1. Upload to S3
+      const uploadRes = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const uploadData = await uploadRes.json();
+
+      if (!uploadData.success) throw new Error(uploadData.error);
+
+      // 2. Save to DB
+      const dbRes = await fetch(`/api/admin/vpn-products/${id}/screenshots`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageUrl: uploadData.url,
+          altText: file.name,
+          displayOrder: screenshots.length,
+        }),
+      });
+      const dbData = await dbRes.json();
+      if (dbData.success) {
+        setScreenshots([...screenshots, dbData.screenshot]);
+      }
+    } catch (error) {
+      console.error('Screenshot upload error:', error);
+      alert('Failed to upload screenshot');
+    } finally {
+      setUploadingScreenshot(false);
+      // reset file input
+      e.target.value = '';
+    }
+  }
+
+  const handleDeleteScreenshot = async (sid: string) => {
+    if (!id || !confirm('Delete this screenshot?')) return;
+    try {
+      const res = await fetch(`/api/admin/vpn-products/${id}/screenshots/${sid}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setScreenshots(screenshots.filter(s => s.id !== sid));
+      }
+    } catch (error) {
+      console.error('Error deleting screenshot:', error);
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleDragEnd = async (event: any) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      const oldIndex = screenshots.findIndex(s => s.id === active.id);
+      const newIndex = screenshots.findIndex(s => s.id === over.id);
+
+      const newOrder = arrayMove(screenshots, oldIndex, newIndex);
+      setScreenshots(newOrder);
+
+      // Persist order to DB
+      if (id) {
+        try {
+          await fetch(`/api/admin/vpn-products/${id}/screenshots/reorder`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              order: newOrder.map((s, index) => ({ id: s.id, displayOrder: index }))
+            }),
+          });
+        } catch (error) {
+          console.error('Error reordering screenshots:', error);
+        }
+      }
     }
   }
 
@@ -381,13 +545,106 @@ export default function VpnProductForm() {
                   <CardHeader>
                     <CardTitle>Media & Screenshots</CardTitle>
                     <CardDescription>
-                      Upload app screenshots and logos.
+                      Upload app logos, mockups, and screenshots.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="text-center p-8 border rounded-md border-dashed">
-                      <p className="text-muted-foreground mb-4">File uploads will be implemented in a subsequent phase.</p>
-                    </div>
+                  <CardContent className="space-y-8">
+                    {!isEditing ? (
+                      <div className="text-center p-8 border rounded-md border-dashed bg-muted/20">
+                        <UploadCloud className="mx-auto h-8 w-8 text-muted-foreground mb-4" />
+                        <h3 className="text-lg font-medium">Save product first</h3>
+                        <p className="text-sm text-muted-foreground max-w-sm mx-auto mt-2">
+                          Please save the general information for this new product before uploading media files and screenshots.
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                          <FormField
+                            control={form.control}
+                            name="logoUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <FileUpload
+                                    label="App Logo"
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    folder={`vpn-products/${id}/media`}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="deviceMockupUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <FileUpload
+                                    label="Device Mockup"
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    folder={`vpn-products/${id}/media`}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h3 className="text-lg font-medium">App Screenshots</h3>
+                              <p className="text-sm text-muted-foreground">Drag to reorder. Maximum 8 screenshots.</p>
+                            </div>
+                            <div>
+                              <div className="relative inline-block overflow-hidden">
+                                <Button type="button" variant="secondary" disabled={uploadingScreenshot || screenshots.length >= 8}>
+                                  {uploadingScreenshot ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
+                                  Add Screenshot
+                                </Button>
+                                <input
+                                  type="file"
+                                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                  accept="image/jpeg,image/png,image/webp,image/avif,image/svg+xml"
+                                  onChange={handleScreenshotUpload}
+                                  disabled={uploadingScreenshot || screenshots.length >= 8}
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          {screenshots.length > 0 ? (
+                            <DndContext
+                              sensors={sensors}
+                              collisionDetection={closestCenter}
+                              onDragEnd={handleDragEnd}
+                            >
+                              <SortableContext
+                                items={screenshots.map(s => s.id)}
+                                strategy={rectSortingStrategy}
+                              >
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-md bg-muted/20">
+                                  {screenshots.map(screenshot => (
+                                    <SortableItem key={screenshot.id} item={screenshot} onDelete={handleDeleteScreenshot} />
+                                  ))}
+                                </div>
+                              </SortableContext>
+                            </DndContext>
+                          ) : (
+                            <div className="text-center p-8 border rounded-md border-dashed">
+                              <p className="text-muted-foreground">No screenshots added yet.</p>
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>
