@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation'
 import { getVpnProductBySlug } from '@/lib/data/vpn-product'
 import { Metadata } from 'next'
+import { Hero } from './components/Hero'
+import { ThemeProvider } from '@/components/ThemeProvider'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -32,36 +34,16 @@ export default async function SubdomainPage({ params }: Props) {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="p-4 border-b">
-        <h1 className="text-2xl font-bold">{product.name}</h1>
-      </header>
-      <main className="flex-1 p-8">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <section>
-            <h2 className="text-xl font-semibold mb-4">Product Details</h2>
-            <pre className="bg-gray-100 dark:bg-zinc-900 p-4 rounded-lg overflow-x-auto text-sm">
-              {JSON.stringify(
-                {
-                  id: product.id,
-                  name: product.name,
-                  slug: product.subdomainSlug,
-                  status: product.status,
-                  featuresCount: product.features.length,
-                  pricingPlansCount: product.pricingPlans.length,
-                  screenshotsCount: product.screenshots.length,
-                  testimonialsCount: product.testimonials.length,
-                  primaryColor: product.primaryColor,
-                  secondaryColor: product.secondaryColor,
-                  fontFamily: product.fontFamily,
-                },
-                null,
-                2
-              )}
-            </pre>
-          </section>
-        </div>
-      </main>
-    </div>
+    <ThemeProvider
+      primaryColor={product.primaryColor || undefined}
+      secondaryColor={product.secondaryColor || undefined}
+      fontFamily={product.fontFamily || undefined}
+    >
+      <div className="flex flex-col min-h-screen font-sans">
+        <main className="flex-1">
+          <Hero product={product} />
+        </main>
+      </div>
+    </ThemeProvider>
   )
 }
