@@ -3,9 +3,10 @@ import type { NextRequest } from 'next/server'
 import { verifySessionJwt } from '@/lib/jwt'
 
 export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const url = request.nextUrl
+  const { pathname } = url
 
-  // Protect /api/admin/* routes
+  // 1. Protect /api/admin/* routes
   if (pathname.startsWith('/api/admin')) {
     const sessionCookie = request.cookies.get('admin_session')
 
@@ -35,10 +36,62 @@ export async function proxy(request: NextRequest) {
     })
   }
 
+  // 2. Host header extraction for wildcard subdomains
+  const hostname = request.headers.get('host')
+
+  // We only care about rewriting if we have a hostname and we are not in an API route or static path
+  if (
+    hostname &&
+    !pathname.startsWith('/api') &&
+    !pathname.startsWith('/_next') &&
+    !pathname.startsWith('/favicon.ico') &&
+    !pathname.match(/\.(.*)$/) // Exclude files like .png, .css, etc.
+  ) {
+    // Define the main domain (for local testing, we might use localhost:3000, for prod: abcd.com)
+    // You could also extract this dynamically or from an environment variable.
+    const mainDomain = process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'abcd.com'
+    const adminDomain = `admin.${mainDomain}`
+
+    // Extract subdomain
+    // E.g., laion.abcd.com -> laion
+    let subdomain = null
+
+    // Check if it's localhost testing
+    if (hostname.includes('localhost')) {
+      // laion.localhost:3000 -> laion
+      const parts = hostname.split('.')
+      if (parts.length >= 2 && parts[0] !== 'www' && parts[0] !== 'admin') {
+         subdomain = parts[0]
+      }
+    } else {
+      // laion.abcd.com -> laion
+      // abcd.com -> null
+      // www.abcd.com -> null
+      const domainParts = hostname.replace(`.${mainDomain}`, '').split('.')
+      if (hostname !== mainDomain && hostname !== `www.${mainDomain}` && hostname !== adminDomain) {
+        subdomain = domainParts[0]
+      }
+    }
+
+    if (subdomain && subdomain !== 'www' && subdomain !== 'admin' && subdomain !== 'localhost:3000') {
+      // Rewrite to our dynamic route for subdomains: /subdomain/[slug]
+      return NextResponse.rewrite(new URL(`/subdomain/${subdomain}${pathname === '/' ? '' : pathname}`, request.url))
+    }
+  }
+
   return NextResponse.next()
 }
 
 // Config indicating where middleware should run
 export const config = {
-  matcher: ['/api/admin/:path*'],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - images, fonts, etc.
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 }
