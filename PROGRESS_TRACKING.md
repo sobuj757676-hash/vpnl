@@ -26,7 +26,7 @@ This document tracks the progress of the implementation plan based on `IMPLEMENT
 - [x] Setup Framer Motion base animations (staggered fade-ups, scroll-spy).
 
 ## Phase 4: Subdomain Landing Pages (Weeks 7-9)
-- [ ] Implement the Next.js middleware / host header extraction for wildcard subdomains (`[vpn-name].abcd.com`).
+- [x] Implement the Next.js middleware / host header extraction for wildcard subdomains (`[vpn-name].abcd.com`).
 - [ ] Build the data-fetching layer to query the DB using the `subdomain_slug`.
 - [ ] Develop the page sections:
   - [ ] Hero (dynamic background, CTAs, App Mockup).
