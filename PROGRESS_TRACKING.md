@@ -28,13 +28,13 @@ This document tracks the progress of the implementation plan based on `IMPLEMENT
 ## Phase 4: Subdomain Landing Pages (Weeks 7-9)
 - [x] Implement the Next.js middleware / host header extraction for wildcard subdomains (`[vpn-name].abcd.com`).
 - [x] Build the data-fetching layer to query the DB using the `subdomain_slug`.
-- [ ] Develop the page sections:
-  - [ ] Hero (dynamic background, CTAs, App Mockup).
-  - [ ] App Screenshots 3D Carousel.
-  - [ ] Features Grid (with scroll-triggered SVG path animations).
-  - [ ] Server Locations Badge Cloud.
-  - [ ] Pricing Plans (Monthly/Yearly toggle, Featured plan logic).
-  - [ ] Legal Pages (Privacy Policy, Terms & Conditions generation).
+- [x] Develop the page sections:
+  - [x] Hero (dynamic background, CTAs, App Mockup).
+  - [x] App Screenshots 3D Carousel.
+  - [x] Features Grid (with scroll-triggered SVG path animations).
+  - [x] Server Locations Badge Cloud.
+  - [x] Pricing Plans (Monthly/Yearly toggle, Featured plan logic).
+  - [x] Legal Pages (Privacy Policy, Terms & Conditions generation).
 - [ ] Ensure 100% adherence to WCAG 2.1 Level AA and strict mobile-responsive rules.
 
 ## Phase 5: Main Website (`abcd.com`) (Weeks 10-11)
