@@ -1,15 +1,56 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
+  --font-sans: var(--font-geist-sans), "Inter", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+
+  /* Typography */
+  --text-display: 72px;
+  --text-h1: 48px;
+  --text-h2: 32px;
+  --text-h3: 24px;
+  --text-body-large: 18px;
+  --text-body: 16px;
+  --text-caption: 13px;
+
+  /* Font Weights */
+  --font-weight-display: 800;
+  --font-weight-h1: 700;
+  --font-weight-h2: 600;
+  --font-weight-h3: 600;
+  --font-weight-body-large: 400;
+  --font-weight-body: 400;
+  --font-weight-caption: 500;
+
+  /* Spacing */
+  --spacing-8: 8px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-80: 80px;
+  --spacing-96: 96px;
+  --spacing-120: 120px;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  /* Default Values for Design Tokens */
+  --primary: #1A56DB;
+  --primary-light: #3F83F8;
+  --primary-dark: #1E429F;
+  --secondary: #9061F9;
+
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +63,42 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* Base Headings Setup */
+.text-display {
+  font-size: var(--text-display);
+  font-weight: var(--font-weight-display);
+  line-height: 1.1;
+}
+.text-h1 {
+  font-size: var(--text-h1);
+  font-weight: var(--font-weight-h1);
+  line-height: 1.2;
+}
+.text-h2 {
+  font-size: var(--text-h2);
+  font-weight: var(--font-weight-h2);
+  line-height: 1.3;
+}
+.text-h3 {
+  font-size: var(--text-h3);
+  font-weight: var(--font-weight-h3);
+  line-height: 1.4;
+}
+.text-body-large {
+  font-size: var(--text-body-large);
+  font-weight: var(--font-weight-body-large);
+  line-height: 1.5;
+}
+.text-body {
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-body);
+  line-height: 1.5;
+}
+.text-caption {
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-caption);
+  line-height: 1.5;
 }

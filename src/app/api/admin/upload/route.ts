@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    let uploadBuffer = buffer;
+    let uploadBuffer: Buffer | Uint8Array = buffer;
     let contentType = file.type;
     let extension = file.name.split('.').pop()?.toLowerCase() || '';
 

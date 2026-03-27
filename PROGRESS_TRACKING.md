@@ -19,11 +19,11 @@ This document tracks the progress of the implementation plan based on `IMPLEMENT
 - [x] Implement main site CMS update endpoints.
 
 ## Phase 3: Design System & Theming Engine (Week 6)
-- [ ] Finalize Figma handoff and establish global design tokens.
-- [ ] Implement base Tailwind configuration (Typography, Colors, Spacing).
-- [ ] Build the CSS custom property injection logic (server-side rendering) to apply per-VPN themes (`--primary`, `--secondary`, etc.).
-- [ ] Develop core reusable UI components (Glassmorphism cards, App Store Badges, Feature icons, Buttons).
-- [ ] Setup Framer Motion base animations (staggered fade-ups, scroll-spy).
+- [x] Finalize Figma handoff and establish global design tokens.
+- [x] Implement base Tailwind configuration (Typography, Colors, Spacing).
+- [x] Build the CSS custom property injection logic (server-side rendering) to apply per-VPN themes (`--primary`, `--secondary`, etc.).
+- [x] Develop core reusable UI components (Glassmorphism cards, App Store Badges, Feature icons, Buttons).
+- [x] Setup Framer Motion base animations (staggered fade-ups, scroll-spy).
 
 ## Phase 4: Subdomain Landing Pages (Weeks 7-9)
 - [ ] Implement the Next.js middleware / host header extraction for wildcard subdomains (`[vpn-name].abcd.com`).
