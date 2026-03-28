@@ -65,7 +65,7 @@ export function Hero({ product }: HeroProps) {
                 href={product.appStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-transform hover:scale-105 active:scale-95 inline-block w-48"
+                className="transition-transform hover:scale-105 active:scale-95 inline-block w-48 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
                 aria-label="Download on the App Store"
               >
                 {/* Fallback simple button if we don't have official badge image */}
@@ -86,7 +86,7 @@ export function Hero({ product }: HeroProps) {
                 href={product.playStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-transform hover:scale-105 active:scale-95 inline-block w-48"
+                className="transition-transform hover:scale-105 active:scale-95 inline-block w-48 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
                 aria-label="Get it on Google Play"
               >
                 <div className="bg-black text-white flex items-center justify-center gap-3 rounded-xl py-2 px-4 border border-white/20 hover:border-white/40 transition-colors min-h-[56px]">

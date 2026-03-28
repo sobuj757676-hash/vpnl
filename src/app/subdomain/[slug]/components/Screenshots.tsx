@@ -18,7 +18,7 @@ export function Screenshots({ screenshots }: ScreenshotsProps) {
   }
 
   // Ensure screenshots are ordered
-  const orderedScreenshots = [...screenshots].sort((a, b) => a.displayOrder - b.displayOrder)
+  const orderedScreenshots = [...screenshots].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
 
   const handleNext = () => {
     setActiveIndex((prev) => (prev + 1) % orderedScreenshots.length)
@@ -79,7 +79,7 @@ export function Screenshots({ screenshots }: ScreenshotsProps) {
               return (
                 <motion.div
                   key={img.id}
-                  className="absolute cursor-pointer rounded-2xl overflow-hidden shadow-2xl"
+                  className="absolute cursor-pointer rounded-2xl overflow-hidden shadow-2xl focus:outline-none focus-visible:ring-4 focus-visible:ring-primary focus-visible:ring-offset-2"
                   style={{
                     width: isPortrait ? '300px' : '600px',
                     height: isPortrait ? '600px' : '337.5px', // 16:9 ratio
@@ -93,14 +93,25 @@ export function Screenshots({ screenshots }: ScreenshotsProps) {
                     opacity,
                   }}
                   transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                  role="button"
+                  tabIndex={0}
                   onClick={() => {
                     if (isActive) setLightboxOpen(true)
                     else if (isPrev) handlePrev()
                     else if (isNext) handleNext()
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      if (isActive) setLightboxOpen(true)
+                      else if (isPrev) handlePrev()
+                      else if (isNext) handleNext()
+                    }
+                  }}
+                  aria-label={`View screenshot ${index + 1}`}
                 >
                   <Image
-                    src={img.imageUrl}
+                    src={img.imageUrl || ''}
                     alt={img.altText || `Screenshot ${index + 1}`}
                     fill
                     className="object-cover"
@@ -116,7 +127,7 @@ export function Screenshots({ screenshots }: ScreenshotsProps) {
 
           <button
             onClick={handlePrev}
-            className="absolute left-8 z-40 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-full p-4 transition-transform hover:scale-105"
+            className="absolute left-8 z-40 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-full p-4 transition-transform hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             aria-label="Previous screenshot"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-6 h-6">
@@ -126,7 +137,7 @@ export function Screenshots({ screenshots }: ScreenshotsProps) {
 
           <button
             onClick={handleNext}
-            className="absolute right-8 z-40 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-full p-4 transition-transform hover:scale-105"
+            className="absolute right-8 z-40 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-full p-4 transition-transform hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             aria-label="Next screenshot"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-6 h-6">
@@ -142,18 +153,28 @@ export function Screenshots({ screenshots }: ScreenshotsProps) {
             return (
               <div
                 key={img.id}
-                className="snap-center shrink-0 rounded-xl overflow-hidden shadow-lg relative"
+                className="snap-center shrink-0 rounded-xl overflow-hidden shadow-lg relative cursor-pointer focus:outline-none focus-visible:ring-4 focus-visible:ring-primary focus-visible:ring-offset-2"
                 style={{
                   width: isPortrait ? '280px' : '85vw',
                   height: isPortrait ? '560px' : 'calc(85vw * 9 / 16)'
                 }}
+                role="button"
+                tabIndex={0}
                 onClick={() => {
                   setActiveIndex(index)
                   setLightboxOpen(true)
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    setActiveIndex(index)
+                    setLightboxOpen(true)
+                  }
+                }}
+                aria-label={`View screenshot ${index + 1} full screen`}
               >
                 <Image
-                  src={img.imageUrl}
+                  src={img.imageUrl || ''}
                   alt={img.altText || `Screenshot ${index + 1}`}
                   fill
                   className="object-cover"
@@ -170,7 +191,7 @@ export function Screenshots({ screenshots }: ScreenshotsProps) {
             <button
               key={idx}
               onClick={() => setActiveIndex(idx)}
-              className={`w-2.5 h-2.5 rounded-full transition-colors ${idx === activeIndex ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-700'}`}
+              className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${idx === activeIndex ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-700'}`}
               aria-label={`Go to slide ${idx + 1}`}
             />
           ))}
@@ -188,8 +209,9 @@ export function Screenshots({ screenshots }: ScreenshotsProps) {
             onClick={() => setLightboxOpen(false)}
           >
             <button
-              className="absolute top-6 right-6 text-white hover:text-gray-300 z-50"
+              className="absolute top-6 right-6 text-white hover:text-gray-300 z-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-full p-1"
               onClick={() => setLightboxOpen(false)}
+              aria-label="Close lightbox"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-8 h-8">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -201,7 +223,7 @@ export function Screenshots({ screenshots }: ScreenshotsProps) {
               onClick={(e) => e.stopPropagation()}
             >
               <Image
-                src={orderedScreenshots[activeIndex].imageUrl}
+                src={orderedScreenshots[activeIndex].imageUrl || ''}
                 alt={orderedScreenshots[activeIndex].altText || `Screenshot full`}
                 fill
                 className="object-contain"
@@ -210,7 +232,8 @@ export function Screenshots({ screenshots }: ScreenshotsProps) {
 
               <button
                 onClick={handlePrev}
-                className="absolute left-4 z-40 text-white bg-black/50 hover:bg-black/80 rounded-full p-3"
+                className="absolute left-4 z-40 text-white bg-black/50 hover:bg-black/80 rounded-full p-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                aria-label="Previous screenshot"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-8 h-8">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -219,7 +242,8 @@ export function Screenshots({ screenshots }: ScreenshotsProps) {
 
               <button
                 onClick={handleNext}
-                className="absolute right-4 z-40 text-white bg-black/50 hover:bg-black/80 rounded-full p-3"
+                className="absolute right-4 z-40 text-white bg-black/50 hover:bg-black/80 rounded-full p-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                aria-label="Next screenshot"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-8 h-8">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

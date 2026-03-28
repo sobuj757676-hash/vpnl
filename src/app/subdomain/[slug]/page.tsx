@@ -45,7 +45,13 @@ export default async function SubdomainPage({ params }: Props) {
       fontFamily={product.fontFamily || undefined}
     >
       <div className="flex flex-col min-h-screen font-sans bg-background text-foreground">
-        <main className="flex-1">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+        >
+          Skip to main content
+        </a>
+        <main id="main-content" className="flex-1 focus:outline-none" tabIndex={-1}>
           <Hero product={product} />
           {product.screenshots && product.screenshots.length > 0 && (
             <Screenshots screenshots={product.screenshots} />
@@ -55,7 +61,11 @@ export default async function SubdomainPage({ params }: Props) {
           )}
           <ServerLocations serverCount={5000} countryCount={60} countries={[]} />
           {product.pricingPlans && product.pricingPlans.length > 0 && (
-            <Pricing plans={product.pricingPlans} />
+            <Pricing plans={product.pricingPlans.map(plan => ({
+              ...plan,
+              monthlyPrice: plan.monthlyPrice ? Number(plan.monthlyPrice) : null,
+              yearlyPrice: plan.yearlyPrice ? Number(plan.yearlyPrice) : null,
+            }))} />
           )}
         </main>
         <Footer productName={product.name} logoUrl={product.logoUrl} />

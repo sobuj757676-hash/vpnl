@@ -4,8 +4,13 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { VpnPricingPlan } from '@prisma/client'
 
+interface SerializedPricingPlan extends Omit<VpnPricingPlan, 'monthlyPrice' | 'yearlyPrice'> {
+  monthlyPrice: number | null
+  yearlyPrice: number | null
+}
+
 interface PricingProps {
-  plans: VpnPricingPlan[]
+  plans: SerializedPricingPlan[]
 }
 
 export function Pricing({ plans }: PricingProps) {
@@ -15,7 +20,7 @@ export function Pricing({ plans }: PricingProps) {
     return null
   }
 
-  const orderedPlans = [...plans].sort((a, b) => a.displayOrder - b.displayOrder)
+  const orderedPlans = [...plans].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
 
   return (
     <section className="py-24 bg-background relative overflow-hidden" id="pricing">
@@ -32,7 +37,7 @@ export function Pricing({ plans }: PricingProps) {
             </span>
             <button
               onClick={() => setIsYearly(!isYearly)}
-              className="relative inline-flex h-8 w-16 items-center rounded-full bg-gray-200 dark:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              className="relative inline-flex h-8 w-16 items-center rounded-full bg-gray-200 dark:bg-gray-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               role="switch"
               aria-checked={isYearly}
             >
@@ -69,7 +74,7 @@ export function Pricing({ plans }: PricingProps) {
               <motion.div
                 key={plan.id}
                 whileHover={{ y: -8 }}
-                className={`relative flex flex-col rounded-3xl p-8 bg-white dark:bg-gray-800 shadow-xl border-2 transition-colors ${
+                className={`relative flex flex-col rounded-3xl p-6 sm:p-8 bg-white dark:bg-gray-800 shadow-xl border-2 transition-colors ${
                   plan.isFeatured
                     ? 'border-primary dark:border-primary shadow-primary/20 scale-105 z-10'
                     : 'border-transparent dark:border-gray-700 hover:border-primary/50'
@@ -95,7 +100,7 @@ export function Pricing({ plans }: PricingProps) {
 
                   {isYearly && hasDiscount && (
                     <div className="text-sm font-medium text-green-600 dark:text-green-400 h-6">
-                      Equivalent to ${monthlyEquivalent}/mo (Save {discountPercent}%)
+                      Equivalent to ${monthlyEquivalent?.toString()}/mo (Save {discountPercent}%)
                     </div>
                   )}
                   {(!isYearly || !hasDiscount) && <div className="h-6" />}
@@ -120,11 +125,12 @@ export function Pricing({ plans }: PricingProps) {
 
                 <a
                   href={plan.ctaUrl || '#'}
-                  className={`mt-auto block w-full py-4 px-6 rounded-xl text-center font-bold text-lg transition-all duration-200 ${
+                  className={`mt-auto block w-full py-4 px-6 rounded-xl text-center font-bold text-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                     plan.isFeatured
                       ? 'bg-primary text-white hover:bg-primary-dark shadow-lg shadow-primary/30 hover:shadow-primary/50'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
+                  aria-label={`${plan.ctaLabel || 'Get Started'} with ${plan.planName}`}
                 >
                   {plan.ctaLabel || 'Get Started'}
                 </a>

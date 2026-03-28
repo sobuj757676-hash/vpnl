@@ -24,7 +24,7 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: 'easeOut' }
+    transition: { duration: 0.5, ease: 'easeOut' as const }
   }
 }
 
@@ -33,7 +33,7 @@ const iconVariants = {
   visible: {
     pathLength: 1,
     opacity: 1,
-    transition: { duration: 0.8, ease: 'easeInOut' }
+    transition: { duration: 0.8, ease: 'easeInOut' as const }
   }
 }
 
@@ -45,14 +45,14 @@ export function Features({ features }: FeaturesProps) {
     return null
   }
 
-  const orderedFeatures = [...features].sort((a, b) => a.displayOrder - b.displayOrder)
+  const orderedFeatures = [...features].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
 
   // Default SVG for Phosphor icons or fallback
   const getIcon = (feature: VpnFeature) => {
     if (feature.iconName === 'custom' && feature.iconSvgUrl) {
       return (
         <div className="relative w-10 h-10 group-hover:scale-110 transition-transform duration-300">
-          <Image src={feature.iconSvgUrl} alt={feature.title} fill className="object-contain" />
+          <Image src={feature.iconSvgUrl} alt={feature.title || ''} fill className="object-contain" />
         </div>
       )
     }
@@ -101,7 +101,7 @@ export function Features({ features }: FeaturesProps) {
             <motion.div
               key={feature.id}
               variants={itemVariants}
-              className="group p-8 rounded-2xl bg-white dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 ease-out flex flex-col items-start text-left"
+              className="group p-6 sm:p-8 rounded-2xl bg-white dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 ease-out flex flex-col items-start text-left"
             >
               <div className="mb-6 bg-primary/10 p-4 rounded-xl text-primary">
                 {getIcon(feature)}
