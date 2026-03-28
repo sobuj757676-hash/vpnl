@@ -5,6 +5,7 @@ import { StatsBar } from '@/components/StatsBar';
 import { AboutUs } from '@/components/AboutUs';
 import { GlobalFooter } from '@/components/GlobalFooter';
 import { Header } from '@/components/Header';
+import { AnnouncementBar } from '@/components/AnnouncementBar';
 import { getSiteConfig } from '@/lib/data/site-config';
 import prisma from '@/lib/prisma';
 
@@ -45,6 +46,12 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white font-sans text-black dark:bg-black dark:text-white">
+      <AnnouncementBar
+        visible={siteConfig['announcement_visible'] !== false}
+        text={siteConfig['announcement_text']}
+        bgColor={siteConfig['announcement_bg_color']}
+        url={siteConfig['announcement_url']}
+      />
       <Header />
       <main className="flex-1 w-full pt-0">
         <MainHero
