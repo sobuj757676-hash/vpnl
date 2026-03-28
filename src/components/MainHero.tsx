@@ -61,7 +61,8 @@ export function MainHero({
             <div className="pt-8">
               <a
                 href={ctaUrl}
-                className="inline-flex h-14 items-center justify-center rounded-xl bg-white px-8 text-base font-medium text-black transition-colors hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
+                className="inline-flex h-14 items-center justify-center rounded-xl bg-white px-8 text-base font-medium text-black transition-colors hover:bg-zinc-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                aria-label={ctaLabel}
               >
                 {ctaLabel}
               </a>

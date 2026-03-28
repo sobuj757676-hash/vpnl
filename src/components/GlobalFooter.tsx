@@ -22,23 +22,23 @@ export function GlobalFooter({
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
 
           <div className="md:col-span-1 space-y-6">
-            <a href="/" className="inline-flex items-center gap-2">
+            <a href="/" className="inline-flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-500 rounded-md">
               <span className="font-bold text-xl text-white tracking-tight">Our VPNs</span>
             </a>
 
             {contactEmail && (
               <p className="flex items-center gap-2 text-zinc-300">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <a href={`mailto:${contactEmail}`} className="hover:text-white transition-colors">{contactEmail}</a>
+                <a href={`mailto:${contactEmail}`} className="hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-500 rounded-sm">{contactEmail}</a>
               </p>
             )}
 
             {socialLinks && socialLinks.length > 0 && (
               <div className="flex gap-4">
                 {socialLinks.map((link, i) => (
-                  <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-white transition-colors">
+                  <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-500 rounded-sm" aria-label={link.platform}>
                     {link.platform}
                   </a>
                 ))}
@@ -55,7 +55,7 @@ export function GlobalFooter({
                 <ul className="space-y-3">
                   {group.links.map((link, j) => (
                     <li key={j}>
-                      <a href={link.url} className="hover:text-white transition-colors">
+                    <a href={link.url} className="hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-500 rounded-sm">
                         {link.label}
                       </a>
                     </li>

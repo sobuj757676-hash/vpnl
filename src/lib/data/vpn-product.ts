@@ -10,27 +10,32 @@ export type VpnProductWithRelations = VpnProduct & {
 }
 
 export async function getVpnProductBySlug(slug: string): Promise<VpnProductWithRelations | null> {
-  const product = await prisma.vpnProduct.findFirst({
-    where: {
-      subdomainSlug: slug,
-      status: 'published',
-    },
-    include: {
-      features: {
-        orderBy: { displayOrder: 'asc' },
+  try {
+    const product = await prisma.vpnProduct.findFirst({
+      where: {
+        subdomainSlug: slug,
+        status: 'published',
       },
-      pricingPlans: {
-        orderBy: { displayOrder: 'asc' },
+      include: {
+        features: {
+          orderBy: { displayOrder: 'asc' },
+        },
+        pricingPlans: {
+          orderBy: { displayOrder: 'asc' },
+        },
+        legal: true,
+        screenshots: {
+          orderBy: { displayOrder: 'asc' },
+        },
+        testimonials: {
+          orderBy: { displayOrder: 'asc' },
+        },
       },
-      legal: true,
-      screenshots: {
-        orderBy: { displayOrder: 'asc' },
-      },
-      testimonials: {
-        orderBy: { displayOrder: 'asc' },
-      },
-    },
-  })
+    })
 
-  return product as VpnProductWithRelations | null
+    return product as VpnProductWithRelations | null
+  } catch (error) {
+    console.warn(`Could not fetch VPN product with slug ${slug} during static build/request:`, error);
+    return null;
+  }
 }

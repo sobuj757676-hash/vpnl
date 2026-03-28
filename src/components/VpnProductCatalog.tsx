@@ -60,11 +60,12 @@ export function VpnProductCatalog({ products }: VpnProductCatalogProps) {
               <button
                 key={tag}
                 onClick={() => setActiveFilter(tag)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 dark:focus-visible:ring-zinc-100 ${
                   activeFilter === tag
                     ? 'bg-zinc-900 text-white shadow-md dark:bg-zinc-100 dark:text-zinc-900'
                     : 'bg-white text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800'
                 }`}
+                aria-pressed={activeFilter === tag}
               >
                 {tag}
               </button>
@@ -86,7 +87,8 @@ export function VpnProductCatalog({ products }: VpnProductCatalogProps) {
                 transition={{ duration: 0.3 }}
                 key={product.id}
                 href={productUrl}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-xl dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800"
+                aria-label={`View product details for ${product.name}`}
+                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-900 dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800"
               >
                 {/* Glassmorphism gradient effect on hover */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"

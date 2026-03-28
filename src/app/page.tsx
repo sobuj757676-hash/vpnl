@@ -8,6 +8,7 @@ import { Header } from '@/components/Header';
 import { AnnouncementBar } from '@/components/AnnouncementBar';
 import { getSiteConfig } from '@/lib/data/site-config';
 import prisma from '@/lib/prisma';
+import { VpnProduct } from '@prisma/client';
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteConfig = await getSiteConfig();
@@ -39,10 +40,15 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const siteConfig = await getSiteConfig();
 
-  const products = await prisma.vpnProduct.findMany({
-    where: { status: 'published' },
-    orderBy: { displayOrder: 'asc' },
-  });
+  let products: VpnProduct[] = [];
+  try {
+    products = await prisma.vpnProduct.findMany({
+      where: { status: 'published' },
+      orderBy: { displayOrder: 'asc' },
+    });
+  } catch (error) {
+    console.warn('Could not fetch VPN products during static build:', error);
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-white font-sans text-black dark:bg-black dark:text-white">

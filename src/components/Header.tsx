@@ -27,20 +27,20 @@ export function Header() {
       <div className="container mx-auto px-4 md:px-6 max-w-[1280px]">
         <div className="flex items-center justify-between h-20">
 
-          <Link href="/" className="flex-shrink-0 flex items-center gap-2 transition-transform active:scale-95">
+          <Link href="/" className="flex-shrink-0 flex items-center gap-2 transition-transform active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-500 rounded-md">
             <span className={`font-bold text-2xl tracking-tighter ${isScrolled ? 'text-zinc-900 dark:text-white' : 'text-white'}`}>
               VPN<span className={isScrolled ? 'text-zinc-500' : 'text-white/70'}>PORTFOLIO</span>
             </span>
           </Link>
 
-          <nav className="hidden md:flex space-x-8">
-            <a href="#catalog" className={`text-sm font-medium transition-colors hover:text-zinc-400 ${isScrolled ? 'text-zinc-600 dark:text-zinc-300' : 'text-white/80'}`}>
+          <nav className="hidden md:flex space-x-8" aria-label="Main Navigation">
+            <a href="#catalog" className={`text-sm font-medium transition-colors hover:text-zinc-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-500 rounded-sm ${isScrolled ? 'text-zinc-600 dark:text-zinc-300' : 'text-white/80'}`}>
               Products
             </a>
-            <a href="#about" className={`text-sm font-medium transition-colors hover:text-zinc-400 ${isScrolled ? 'text-zinc-600 dark:text-zinc-300' : 'text-white/80'}`}>
+            <a href="#about" className={`text-sm font-medium transition-colors hover:text-zinc-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-500 rounded-sm ${isScrolled ? 'text-zinc-600 dark:text-zinc-300' : 'text-white/80'}`}>
               About
             </a>
-            <a href="#stats" className={`text-sm font-medium transition-colors hover:text-zinc-400 ${isScrolled ? 'text-zinc-600 dark:text-zinc-300' : 'text-white/80'}`}>
+            <a href="#stats" className={`text-sm font-medium transition-colors hover:text-zinc-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-500 rounded-sm ${isScrolled ? 'text-zinc-600 dark:text-zinc-300' : 'text-white/80'}`}>
               Stats
             </a>
           </nav>
@@ -48,7 +48,7 @@ export function Header() {
           <div className="hidden md:flex items-center space-x-4">
             <a
               href="#catalog"
-              className={`inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:scale-105 active:scale-95 ${
+              className={`inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:scale-105 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-500 ${
                 isScrolled
                   ? 'bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200'
                   : 'bg-white text-zinc-900 hover:bg-zinc-200'
@@ -59,9 +59,10 @@ export function Header() {
           </div>
 
           <button
-            className={`md:hidden p-2 rounded-lg focus:outline-none ${isScrolled ? 'text-zinc-900 dark:text-white' : 'text-white'}`}
+            className={`md:hidden p-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-500 ${isScrolled ? 'text-zinc-900 dark:text-white' : 'text-white'}`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
           >
             <svg
               className="w-6 h-6"
@@ -82,19 +83,19 @@ export function Header() {
 
       {isMenuOpen && (
         <div className="md:hidden absolute top-20 left-0 right-0 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 shadow-xl p-4">
-          <nav className="flex flex-col space-y-4">
-            <a href="#catalog" className="text-zinc-900 dark:text-zinc-100 font-medium py-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-lg px-4" onClick={() => setIsMenuOpen(false)}>
+          <nav className="flex flex-col space-y-4" aria-label="Mobile Navigation">
+            <a href="#catalog" className="text-zinc-900 dark:text-zinc-100 font-medium py-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-lg px-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 dark:focus-visible:ring-zinc-100" onClick={() => setIsMenuOpen(false)}>
               Products
             </a>
-            <a href="#about" className="text-zinc-900 dark:text-zinc-100 font-medium py-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-lg px-4" onClick={() => setIsMenuOpen(false)}>
+            <a href="#about" className="text-zinc-900 dark:text-zinc-100 font-medium py-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-lg px-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 dark:focus-visible:ring-zinc-100" onClick={() => setIsMenuOpen(false)}>
               About
             </a>
-            <a href="#stats" className="text-zinc-900 dark:text-zinc-100 font-medium py-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-lg px-4" onClick={() => setIsMenuOpen(false)}>
+            <a href="#stats" className="text-zinc-900 dark:text-zinc-100 font-medium py-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-lg px-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 dark:focus-visible:ring-zinc-100" onClick={() => setIsMenuOpen(false)}>
               Stats
             </a>
             <a
               href="#catalog"
-              className="mt-4 w-full inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="mt-4 w-full inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-900"
               onClick={() => setIsMenuOpen(false)}
             >
               Get Started
