@@ -34,21 +34,21 @@ export function Footer({ productName, logoUrl }: FooterProps) {
             <div>
               <h4 className="text-white font-semibold mb-4">Product</h4>
               <ul className="space-y-3">
-                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#servers" className="hover:text-white transition-colors">Servers</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm">Features</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm">Pricing</a></li>
+                <li><a href="#servers" className="hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm">Servers</a></li>
               </ul>
             </div>
             <div>
               <h4 className="text-white font-semibold mb-4">Legal</h4>
               <ul className="space-y-3">
                 <li>
-                  <Link href="privacy-policy" className="hover:text-white transition-colors">
+                  <Link href="privacy-policy" className="hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="terms" className="hover:text-white transition-colors">
+                  <Link href="terms" className="hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm">
                     Terms & Conditions
                   </Link>
                 </li>
@@ -58,11 +58,11 @@ export function Footer({ productName, logoUrl }: FooterProps) {
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
-          <p>© {currentYear} {productName}. All rights reserved.</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-white transition-colors">Twitter</a>
-            <a href="#" className="hover:text-white transition-colors">Facebook</a>
-            <a href="#" className="hover:text-white transition-colors">Instagram</a>
+          <p className="text-center md:text-left">© {currentYear} {productName}. All rights reserved.</p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <a href="#" className="hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm" aria-label={`${productName} Twitter`}>Twitter</a>
+            <a href="#" className="hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm" aria-label={`${productName} Facebook`}>Facebook</a>
+            <a href="#" className="hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm" aria-label={`${productName} Instagram`}>Instagram</a>
           </div>
         </div>
       </div>
