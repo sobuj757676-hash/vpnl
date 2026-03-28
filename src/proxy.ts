@@ -63,13 +63,23 @@ export async function proxy(request: NextRequest) {
       if (parts.length >= 2 && parts[0] !== 'www' && parts[0] !== 'admin') {
          subdomain = parts[0]
       }
+    } else if (hostname.endsWith('.vercel.app')) {
+      // Treat any .vercel.app domain as the main site
+      subdomain = null
     } else {
       // laion.abcd.com -> laion
       // abcd.com -> null
       // www.abcd.com -> null
-      const domainParts = hostname.replace(`.${mainDomain}`, '').split('.')
-      if (hostname !== mainDomain && hostname !== `www.${mainDomain}` && hostname !== adminDomain) {
-        subdomain = domainParts[0]
+      if (hostname.endsWith(`.${mainDomain}`)) {
+        const subdomainPart = hostname.replace(`.${mainDomain}`, '')
+        if (subdomainPart !== 'www' && subdomainPart !== 'admin') {
+          subdomain = subdomainPart
+        }
+      } else if (hostname !== mainDomain && hostname !== `www.${mainDomain}` && hostname !== adminDomain) {
+        // If it doesn't end with mainDomain, it might be a custom domain for a specific product,
+        // but for now, we assume it's just the main domain if it doesn't match our wildcard pattern
+        // To prevent 404s on unconfigured domains, we won't rewrite it.
+        subdomain = null
       }
     }
 
