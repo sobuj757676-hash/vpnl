@@ -26,6 +26,8 @@ import { Shield, Home, Settings, Users, Server, FileText, BarChart3, Lock } from
 import Dashboard from "./pages/Dashboard"
 import VpnProducts from "./pages/VpnProducts"
 import VpnProductForm from "./pages/VpnProductForm"
+import Analytics from "./pages/Analytics"
+import AuditLogs from "./pages/AuditLogs"
 
 export default function App() {
   const location = useLocation()
@@ -35,6 +37,8 @@ export default function App() {
     if (location.pathname === "/vpn-products") return "VPN Products"
     if (location.pathname === "/vpn-products/new") return "New VPN Product"
     if (location.pathname.startsWith("/vpn-products/")) return "Edit VPN Product"
+    if (location.pathname === "/analytics") return "Analytics"
+    if (location.pathname === "/audit-logs") return "Audit Logs"
     return "Admin"
   }
 
@@ -73,15 +77,19 @@ export default function App() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Analytics">
-                  <BarChart3 className="mr-2 h-4 w-4" />
-                  <span>Analytics</span>
+                <SidebarMenuButton tooltip="Analytics" isActive={location.pathname === "/analytics"}>
+                  <Link to="/analytics">
+                    <BarChart3 className="mr-2 h-4 w-4" />
+                    <span>Analytics</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Audit Logs">
-                  <FileText className="mr-2 h-4 w-4" />
-                  <span>Audit Logs</span>
+                <SidebarMenuButton tooltip="Audit Logs" isActive={location.pathname === "/audit-logs"}>
+                  <Link to="/audit-logs">
+                    <FileText className="mr-2 h-4 w-4" />
+                    <span>Audit Logs</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
@@ -127,6 +135,8 @@ export default function App() {
               <Route path="/vpn-products" element={<VpnProducts />} />
               <Route path="/vpn-products/new" element={<VpnProductForm />} />
               <Route path="/vpn-products/:id" element={<VpnProductForm />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/audit-logs" element={<AuditLogs />} />
             </Routes>
           </main>
         </SidebarInset>
