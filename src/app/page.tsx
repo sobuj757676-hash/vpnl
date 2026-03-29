@@ -1,5 +1,8 @@
 import { Metadata } from 'next';
 import { MainHero } from '@/components/MainHero';
+import { WhyChooseUs } from '@/components/WhyChooseUs';
+import { UseCases } from '@/components/UseCases';
+import { TrustAndTestimonials } from '@/components/TrustAndTestimonials';
 import { VpnProductCatalog } from '@/components/VpnProductCatalog';
 import { StatsBar } from '@/components/StatsBar';
 import { AboutUs } from '@/components/AboutUs';
@@ -68,6 +71,11 @@ export default async function Home() {
           bgStyle={siteConfig['hero_bg_style']}
           bgValue={siteConfig['hero_bg_value']}
         />
+
+        <TrustAndTestimonials />
+        <WhyChooseUs />
+        <UseCases />
+
         <VpnProductCatalog products={products} />
 
         <div id="stats">
