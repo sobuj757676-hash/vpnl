@@ -64,7 +64,7 @@ export function WhyChooseUs() {
             Why Choose Our Ecosystem?
           </h2>
           <p className="text-xl text-zinc-400 max-w-3xl mx-auto font-light leading-relaxed">
-            We don't just offer one VPN; we provide a comprehensive suite of specialized privacy tools designed to tackle any digital security challenge you face.
+            We don&apos;t just offer one VPN; we provide a comprehensive suite of specialized privacy tools designed to tackle any digital security challenge you face.
           </p>
         </motion.div>
 

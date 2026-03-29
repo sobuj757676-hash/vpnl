@@ -47,7 +47,7 @@ export function UseCases() {
             Tailored For <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Everyone</span>
           </h2>
           <p className="text-xl md:text-2xl text-zinc-400 max-w-3xl mx-auto font-light leading-relaxed">
-            Whether you're protecting your family or securing a global enterprise, we have the perfect digital companion.
+            Whether you&apos;re protecting your family or securing a global enterprise, we have the perfect digital companion.
           </p>
         </motion.div>
 
