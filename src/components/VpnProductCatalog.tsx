@@ -47,96 +47,131 @@ export function VpnProductCatalog({ products }: VpnProductCatalogProps) {
   const mainDomain = process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'abcd.com';
 
   return (
-    <section id="catalog" className="w-full py-24 bg-zinc-50 dark:bg-zinc-950">
-      <div className="container max-w-[1280px] mx-auto px-4 md:px-6">
-        <h2 className="text-4xl font-bold tracking-tight mb-8 text-center text-zinc-900 dark:text-zinc-50">
-          Our VPN Portfolio
-        </h2>
+    <section id="catalog" className="w-full py-24 bg-black relative overflow-hidden">
+      {/* Background glowing effects */}
+      <div className="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-b from-zinc-900 to-transparent pointer-events-none opacity-50"></div>
+
+      <div className="container max-w-[1280px] mx-auto px-4 md:px-6 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-5xl md:text-6xl font-black tracking-tighter mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-500">
+            Our VPN Portfolio
+          </h2>
+          <p className="text-xl text-zinc-400 max-w-2xl mx-auto font-light">
+            Select the perfect privacy companion from our premium collection of VPN services.
+          </p>
+        </motion.div>
 
         {/* Filter Tabs */}
         {allTags.length > 1 && (
-          <div className="flex flex-wrap justify-center gap-2 mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex flex-wrap justify-center gap-3 mb-16"
+          >
             {allTags.map((tag) => (
               <button
                 key={tag}
                 onClick={() => setActiveFilter(tag)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 dark:focus-visible:ring-zinc-100 ${
+                className={`relative px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white overflow-hidden ${
                   activeFilter === tag
-                    ? 'bg-zinc-900 text-white shadow-md dark:bg-zinc-100 dark:text-zinc-900'
-                    : 'bg-white text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                    ? 'text-black shadow-[0_0_15px_rgba(255,255,255,0.2)]'
+                    : 'text-zinc-400 hover:text-white bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700'
                 }`}
                 aria-pressed={activeFilter === tag}
               >
-                {tag}
+                {activeFilter === tag && (
+                  <motion.div
+                    layoutId="activeFilterBg"
+                    className="absolute inset-0 bg-white"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                <span className="relative z-10">{tag}</span>
               </button>
             ))}
-          </div>
+          </motion.div>
         )}
 
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence>
-            {filteredProducts.map((product) => {
+            {filteredProducts.map((product, index) => {
             const productUrl = `https://${product.subdomainSlug}.${mainDomain}`;
 
             return (
               <motion.a
                 layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
                 key={product.id}
                 href={productUrl}
                 aria-label={`View product details for ${product.name}`}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-900 dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800"
+                className="group relative flex flex-col justify-between overflow-hidden rounded-[2rem] bg-zinc-900/40 backdrop-blur-xl p-8 transition-all duration-500 hover:-translate-y-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-900 border border-zinc-800/50 hover:border-zinc-700"
               >
+                {/* Dynamic Glowing Border effect on hover */}
+                <div
+                  className="absolute -inset-[1px] rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none blur-sm"
+                  style={{ background: `linear-gradient(45deg, transparent, ${product.primaryColor || '#ffffff'}, transparent)` }}
+                />
+
                 {/* Glassmorphism gradient effect on hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"
-                     style={{ background: product.primaryColor || '#ffffff' }}></div>
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none"
+                  style={{ background: product.primaryColor || '#ffffff' }}
+                />
 
                 <div className="relative z-10">
-                  <div className="flex items-start justify-between mb-6">
+                  <div className="flex items-start justify-between mb-8">
                     {product.logoUrl ? (
-                      <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 p-2 shadow-sm flex-shrink-0">
+                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-zinc-950/80 p-3 shadow-[0_8px_16px_-6px_rgba(0,0,0,0.5)] flex-shrink-0 border border-zinc-800">
                         <Image
                           src={product.logoUrl}
                           alt={`${product.name} logo`}
                           fill
-                          className="object-contain p-1"
+                          className="object-contain p-2"
                         />
                       </div>
                     ) : (
-                      <div className="w-16 h-16 rounded-xl bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center flex-shrink-0 text-2xl font-bold text-zinc-500">
+                      <div className="w-20 h-20 rounded-2xl bg-zinc-950/80 flex items-center justify-center flex-shrink-0 text-3xl font-black text-white shadow-[0_8px_16px_-6px_rgba(0,0,0,0.5)] border border-zinc-800">
                         {product.name.charAt(0)}
                       </div>
                     )}
 
                     {/* Star Rating */}
                     {product.appRating && (
-                      <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded-full text-sm font-medium">
-                        <span className="text-zinc-800 dark:text-zinc-200">{Number(product.appRating).toFixed(1)}</span>
-                        <svg className="w-4 h-4 text-yellow-500 fill-current" viewBox="0 0 24 24">
+                      <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full text-sm font-bold border border-white/10 shadow-lg">
+                        <span className="text-white">{Number(product.appRating).toFixed(1)}</span>
+                        <svg className="w-4 h-4 text-yellow-500 fill-current drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]" viewBox="0 0 24 24">
                           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
                       </div>
                     )}
                   </div>
 
-                  <h3 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
+                  <h3 className="text-3xl font-black text-white mb-3 tracking-tight">
                     {product.name}
                   </h3>
 
                   {product.shortDescription && (
-                    <p className="text-zinc-600 dark:text-zinc-400 line-clamp-2 mb-6 text-sm">
+                    <p className="text-zinc-400 line-clamp-2 mb-8 text-base font-light leading-relaxed">
                       {product.shortDescription}
                     </p>
                   )}
 
                   {/* Tags */}
                   {product.tags && Array.isArray(product.tags) && product.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-6">
+                    <div className="flex flex-wrap gap-2 mb-8">
                       {(product.tags as string[]).slice(0, 3).map((tag, i) => (
-                        <span key={i} className="px-2.5 py-1 rounded-full text-xs font-medium bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                        <span key={i} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-white/5 text-zinc-300 border border-white/5 backdrop-blur-sm">
                           {tag}
                         </span>
                       ))}
@@ -144,16 +179,18 @@ export function VpnProductCatalog({ products }: VpnProductCatalogProps) {
                   )}
                 </div>
 
-                <div className="relative z-10 mt-auto pt-6">
+                <div className="relative z-10 mt-auto pt-6 border-t border-white/5">
                   <div
-                    className="flex w-full items-center justify-center rounded-xl border-2 py-3 text-sm font-semibold transition-colors group-hover:text-white"
-                    style={{
-                      borderColor: product.primaryColor || '#18181b',
-                      color: 'currentColor',
-                      // We'll use CSS to handle hover state color
-                    }}
+                    className="flex w-full items-center justify-between group-hover:pl-2 transition-all duration-300"
                   >
-                    View Product
+                    <span className="text-sm font-bold text-white uppercase tracking-wider">
+                      View Product
+                    </span>
+                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-colors duration-300">
+                      <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </motion.a>
