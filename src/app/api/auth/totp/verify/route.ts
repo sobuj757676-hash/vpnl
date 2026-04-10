@@ -3,14 +3,25 @@ import prisma from '@/lib/prisma'
 import { verifyTotpCode } from '@/lib/auth'
 import { verifySessionJwt, createSessionJwt } from '@/lib/jwt'
 import { cookies } from 'next/headers'
+import { z } from 'zod'
+
+const totpSchema = z.object({
+  token: z.string().length(6, 'TOTP token must be exactly 6 characters').regex(/^\d+$/, 'TOTP token must contain only numbers')
+})
 
 export async function POST(req: Request) {
   try {
-    const { token } = await req.json()
+    const json = await req.json()
+    const parsed = totpSchema.safeParse(json)
 
-    if (!token) {
-      return NextResponse.json({ error: 'TOTP token is required' }, { status: 400 })
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Invalid input', details: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      )
     }
+
+    const { token } = parsed.data
 
     const cookieStore = await cookies()
     const sessionCookie = cookieStore.get('admin_session')
@@ -79,7 +90,7 @@ export async function POST(req: Request) {
       value: newSessionToken,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'strict',
       path: '/',
       maxAge: 60 * 60 * 24, // 1 day
     })

@@ -50,7 +50,7 @@ export default async function Home() {
       orderBy: { displayOrder: 'asc' },
     });
   } catch (error) {
-    console.warn('Could not fetch VPN products during static build:', error);
+    console.warn('⚠️ Could not fetch VPN products. Gracefully falling back to empty list.', error);
   }
 
   return (
