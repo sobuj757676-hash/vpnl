@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { validateSubdomainSlug } from '@/lib/slug-utils'
 
 export async function GET(
   req: Request,
@@ -58,6 +59,11 @@ export async function PUT(
 
     // Check slug collision
     if (subdomainSlug && subdomainSlug !== existingProduct.subdomainSlug) {
+      const slugError = validateSubdomainSlug(subdomainSlug)
+      if (slugError) {
+        return NextResponse.json({ error: slugError }, { status: 400 })
+      }
+
       const slugCollision = await prisma.vpnProduct.findUnique({
         where: { subdomainSlug }
       })

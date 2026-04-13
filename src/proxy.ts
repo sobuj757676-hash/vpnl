@@ -1,8 +1,60 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { verifySessionJwt } from '@/lib/jwt'
+import { logger } from '@/lib/logger'
+
+// In-memory rate limiting since Edge middleware might not easily support Map across requests in the same way,
+// but for a single instance / Vercel Edge function, we can use a simple map as a rudimentary approach.
+// A better approach for Edge would be Upstash Redis.
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+function rateLimit(ip: string, max: number, windowMs: number) {
+  const now = Date.now();
+  const info = rateLimitStore.get(ip);
+
+  // cleanup
+  if (rateLimitStore.size > 1000) {
+    for (const [key, val] of rateLimitStore.entries()) {
+      if (val.resetTime < now) {
+        rateLimitStore.delete(key);
+      }
+    }
+  }
+
+  if (!info || info.resetTime < now) {
+    rateLimitStore.set(ip, { count: 1, resetTime: now + windowMs });
+    return true;
+  }
+
+  if (info.count >= max) {
+    return false;
+  }
+
+  info.count++;
+  return true;
+}
 
 export async function proxy(request: NextRequest) {
+  const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
+
+  // Apply rate limiting for authentication endpoints
+  if (request.nextUrl.pathname.startsWith('/api/auth')) {
+    const isAllowed = rateLimit(`auth_${ip}`, 10, 60 * 1000); // 10 requests per minute
+    if (!isAllowed) {
+      logger.warn('Rate limit exceeded for auth endpoint', { ip, path: request.nextUrl.pathname });
+      return NextResponse.json({ error: 'Too many requests, please try again later.' }, { status: 429 });
+    }
+  }
+
+  // Apply rate limiting for generic API endpoints
+  if (request.nextUrl.pathname.startsWith('/api')) {
+    const isAllowed = rateLimit(`api_${ip}`, 100, 60 * 1000); // 100 requests per minute
+    if (!isAllowed) {
+      logger.warn('Rate limit exceeded for API endpoint', { ip, path: request.nextUrl.pathname });
+      return NextResponse.json({ error: 'Too many requests, please try again later.' }, { status: 429 });
+    }
+  }
+
   const url = request.nextUrl
   const { pathname } = url
 

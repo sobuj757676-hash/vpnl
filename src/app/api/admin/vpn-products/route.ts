@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { validateSubdomainSlug } from '@/lib/slug-utils'
 
 export async function GET(req: Request) {
   try {
@@ -40,6 +41,11 @@ export async function POST(req: Request) {
 
     if (existingProduct) {
       return NextResponse.json({ error: 'Subdomain slug already exists' }, { status: 409 })
+    }
+
+    const slugError = validateSubdomainSlug(subdomainSlug)
+    if (slugError) {
+      return NextResponse.json({ error: slugError }, { status: 400 })
     }
 
     const maxOrderProduct = await prisma.vpnProduct.findFirst({

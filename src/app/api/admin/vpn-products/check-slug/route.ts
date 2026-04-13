@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { validateSubdomainSlug } from '@/lib/slug-utils'
 
 export async function GET(req: Request) {
   try {
@@ -14,6 +15,11 @@ export async function GET(req: Request) {
     const whereClause: any = { subdomainSlug: slug }
     if (excludeId) {
       whereClause.id = { not: excludeId }
+    }
+
+    const slugError = validateSubdomainSlug(slug)
+    if (slugError) {
+      return NextResponse.json({ available: false, error: slugError })
     }
 
     const existingProduct = await prisma.vpnProduct.findFirst({
