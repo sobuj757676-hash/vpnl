@@ -1,17 +1,18 @@
-# Prompt 3: Interactive Use Cases & Product Catalog
+# Prompt 3: Scroll-Triggered Layouts & 3D Cards
 
-**Task**: Elevate `UseCases.tsx` and `VpnProductCatalog.tsx` with high-interactivity components.
+**Task**: Completely overhaul `UseCases.tsx` and `VpnProductCatalog.tsx` to feature highly interactive, Apple-level scroll animations and 3D effects.
 
-## Step 1: `UseCases.tsx`
-- **Interactive Tabs / Sticky Scroll**: Instead of 3 static cards side-by-side, redesign this section into an interactive "Tabbed" interface OR a "Sticky Scroll" section.
-  - *Option A (Tabs)*: Left side has vertical tabs (Individuals, Businesses, Travelers). Right side dynamically swaps content (with Framer Motion fade/slide) showing rich visuals based on the active tab.
-  - *Option B (Sticky Scroll)*: As the user scrolls down, the left text stays sticky while the right side images/cards scroll up.
-- **Visual Polish**: Use large glowing icons and premium typography for the active state.
+## Step 1: `UseCases.tsx` (Sticky Scroll Journey)
+- **Apple-Style Sticky Scroll**: Discard the static side-by-side cards. Create a layout where the left column (containing the text descriptions for Individuals, Businesses, Travelers) is `sticky` and remains in the viewport.
+- **Dynamic Content Swapping**: As the user scrolls down the page, track the scroll progress. The right side of the screen should smoothly fade/slide between large, high-fidelity visual representations (mockups, abstract illustrations) corresponding to whichever text section on the left is currently active/highlighted.
+- Use Framer Motion's `useScroll` and `useTransform` to tie the opacity and Y-translation of the images directly to the scroll position.
 
-## Step 2: `VpnProductCatalog.tsx`
-- **Advanced Hover Effects**: The product cards are already good, but let's make them incredible. Implement a "3D Tilt" effect using Framer Motion (or standard CSS transforms) so the card tilts slightly based on mouse position.
-- **Dynamic Glow**: Ensure the glowing border matches the specific `product.primaryColor` precisely, and expands smoothly on hover.
-- **Filter Animation**: Improve the filtering tab animations. Make the active pill indicator slide seamlessly between tabs using `layoutId` from Framer Motion.
-- **Empty State**: Make the "No Products" empty state look more deliberate and premium.
+## Step 2: `VpnProductCatalog.tsx` (3D Product Cards)
+- **Interactive 3D Tilt**: Upgrade the product cards. Use `useMotionValue` and `useTransform` from Framer Motion.
+  - Track mouse movement *over the specific card*.
+  - Map the mouse X/Y to `rotateX` and `rotateY` values (e.g., max 10 degrees). When hovered, the card should physically tilt towards the user's cursor.
+- **Dynamic Glow Based on Branding**: Ensure the hover glow effect uses the database value `product.primaryColor`.
+- **Framer Motion `layoutId`**: For the category filter buttons at the top, implement an animated background pill that seamlessly glides between the active tabs using `<motion.div layoutId="activeTab">`.
+- **Image Treatment**: If a logo exists, display it inside a deeply shadowed, slightly inset container. If not, generate a beautiful gradient placeholder based on the product name.
 
 **Wait for my next command ("next") after you complete this step.**

@@ -1,19 +1,21 @@
-# Prompt 4: Stats, About Us & Footer Refinement
+# Prompt 4: Parallax Depth & Mega Footer
 
-**Task**: Finish the homepage by upgrading `StatsBar.tsx`, `AboutUs.tsx`, and `GlobalFooter.tsx`.
+**Task**: Finalize the premium feel by completely revamping `StatsBar.tsx`, `AboutUs.tsx`, and `GlobalFooter.tsx`.
 
-## Step 1: `StatsBar.tsx`
-- **Animated Background**: Enhance the background. Add a subtle animated grid (moving downwards slowly) or a radial spotlight effect that follows the scroll position.
-- **Number Counters**: Ensure `react-countup` is triggered only when firmly in the viewport. Make the typography for the numbers massive and gradient-filled.
+## Step 1: `StatsBar.tsx` (Cinematic Data)
+- **Background Depth**: Add an absolute positioned SVG grid background that slowly scales up and fades out infinitely, creating a sense of forward motion.
+- **Number Animation**: Use `react-countup` but ensure it only triggers when firmly in the viewport (using `useInView`). Wrap the numbers in a massive, bold font with a subtle gradient text mask.
 
-## Step 2: `AboutUs.tsx`
-- **Parallax Image**: Implement a subtle parallax effect on the image container so it moves slightly at a different speed than the text when scrolling.
-- **Typography Integration**: Refine the text layout. Make the "Our Mission" badge more prominent, and ensure the rich text content uses proper leading/line-height for readability on dark backgrounds.
+## Step 2: `AboutUs.tsx` (Multi-layer Parallax)
+- **Complex Parallax**: Implement a multi-layered parallax effect.
+  - The main image/graphic should move upwards slowly as the user scrolls down (`useScroll` mapped to a negative Y value).
+  - Floating UI elements (like a "100% Secure" badge) placed around the main image should move at *different* speeds to create a strong 3D depth effect.
+- **Typography Polish**: Give the "Our Mission" text block maximum readability. Use a very subtle left-border gradient to anchor the text visually.
 
-## Step 3: `GlobalFooter.tsx`
-- **Expanded Layout**: Redesign the footer to look like a modern mega-footer.
-- **Top CTA**: Make the "Ready to take control?" section massive. Give it a distinct background (e.g., a dark radial gradient with a subtle noise texture).
-- **Link Columns**: Organize the navigation links meticulously. Add a sleek hover animation to links (e.g., an underline expanding from left to right, or an arrow sliding in).
-- **Brand Column**: Make the brand column wider, with a more detailed description and perfectly aligned social icons that glow their brand colors on hover.
+## Step 3: `GlobalFooter.tsx` (Interactive Mega Footer)
+- **Massive Top CTA**: Design the "Ready to take control?" section as a distinct block sitting *above* the main footer columns. Give it a deep radial gradient background and a glowing button.
+- **Organized Links**: Arrange the navigation links meticulously. Add a sleek interaction: when hovering over a link, a small arrow (`->`) should slide in from the left, or the text should translate slightly to the right.
+- **Social Icons**: The social icons should be enclosed in circles with `border-white/10`. On hover, they should fill with their respective brand colors (e.g., Twitter blue) while the icon turns white.
+- **Subtle Polish**: Add an ultra-fine `border-t border-white/5` with a very soft white glow at the very top edge of the footer.
 
 **Wait for my next command ("next") after you complete this step.**

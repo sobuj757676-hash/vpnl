@@ -1,14 +1,19 @@
-# Prompt 2: Infinite Marquee & Bento Grid Features
+# Prompt 2: Advanced Bento Grid & Infinite Marquee
 
-**Task**: Redesign `TrustAndTestimonials.tsx` (logo section) and `WhyChooseUs.tsx` (features) into cutting-edge modern layouts.
+**Task**: Elevate `TrustAndTestimonials.tsx` and `WhyChooseUs.tsx` to absolute top-tier quality, focusing on complex micro-interactions.
 
-## Step 1: `TrustAndTestimonials.tsx` (Logos & Quotes)
-- **Infinite Logo Marquee**: Replace the static logo grid with a smooth, infinite-scrolling marquee using Framer Motion or Tailwind animations. The logos should scroll continuously horizontally.
-- **Testimonial Cards**: Upgrade the quote cards. Give them a subtle inner border, radial gradient hover effect (where a soft glow follows the mouse pointer, if possible, or just a sleek hover state), and overlapping avatars.
+## Step 1: `TrustAndTestimonials.tsx` (Flawless Marquee)
+- **Infinite Logo Marquee**: Build an auto-scrolling row of logos.
+  - Crucially, wrap the marquee container in a `mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent)` so the logos smoothly fade out at the left and right edges.
+  - The animation should pause on hover.
+- **Review Cards Refinement**: Convert the standard testimonial cards into sleek glassmorphic panels. Add a subtle radial gradient to the background of the card that becomes slightly more opaque on hover.
 
-## Step 2: `WhyChooseUs.tsx` (Features)
-- **Bento Grid Layout**: Replace the standard 3-column grid with a modern "Bento Box" grid. The grid should have varying sizes (e.g., one large feature spanning 2 columns, others spanning 1).
-- **Visuals in Bento**: Inside each Bento card, don't just put text and an icon. Add abstract, subtle background patterns (like grid lines, dots, or soft gradients) that animate slightly on hover.
-- **Micro-interactions**: When hovering over a feature card, the icon should perform a small animation (scale, rotate, or glow).
+## Step 2: `WhyChooseUs.tsx` (Spotlight Bento Grid)
+- **Bento Grid Layout**: Move away from a uniform 3x2 grid. Create a "Bento" layout where some cards span 2 columns or 2 rows (e.g., `md:col-span-2`, `md:row-span-2`).
+- **Linear-Style Mouse Spotlight Effect**: This is the most important part. For the entire Bento grid container:
+  - Track the mouse X/Y coordinates across the parent container.
+  - Pass these coordinates to every individual feature card.
+  - Inside each card, use these coordinates to render a subtle, soft radial gradient (a "spotlight") that illuminates the border and background *only* when the mouse is near it.
+- **Card Content**: Each card should have abstract, low-opacity SVG patterns (dots, grid lines, topographic maps) in the background. When the mouse enters the card, the icon should trigger a spring-based scale animation.
 
 **Wait for my next command ("next") after you complete this step.**

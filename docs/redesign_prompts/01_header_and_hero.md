@@ -1,22 +1,26 @@
-# Prompt 1: Next-Gen Header & Main Hero Redesign
+# Prompt 1: Next-Level Header & Hero (Top-Notch SaaS)
 
-**Task**: Completely redesign the `Header.tsx` and `MainHero.tsx` components to match a modern, premium SaaS (like Vercel or top VPNs).
+**Task**: Completely redesign `Header.tsx` and `MainHero.tsx` to match the ultra-premium tier of modern web design (think Vercel, Linear, Stripe).
 
-## Context & Rules
-- Tech Stack: Next.js (App Router), Tailwind CSS v4, Framer Motion, Lucide React.
-- Style: Premium dark theme, advanced glassmorphism (`backdrop-blur-xl`, `bg-black/50`), glowing gradients, highly polished animations.
+## Global Rules
+- **Stack**: Next.js App Router, Tailwind CSS v4, Framer Motion v12+, Lucide React.
+- **Aesthetic**: Premium dark mode. Use deep zinc/black backgrounds (`bg-zinc-950`), absolute minimal borders (`border-white/5`), and high-contrast glowing elements.
+- **Performance**: Use `useClient` only where strictly necessary.
 
-## Step 1: `Header.tsx`
-- Implement a floating, glassmorphic header that becomes sticky with a shrink effect upon scrolling.
-- **Mega Menu (Optional but recommended)**: Change simple nav links into a hover-triggered dropdown/mega-menu using Framer Motion (use `AnimatePresence` for smooth in/out).
-- **Mobile Menu**: Create a sleek, full-screen overlay for the mobile menu using Framer Motion rather than a basic dropdown.
-- **Accessibility**: Ensure `focus-visible` rings and proper ARIA attributes are maintained.
+## Step 1: `Header.tsx` (Dynamic Glassmorphic Header)
+- **Scroll-Linked Animation**: Use Framer Motion's `useScroll` and `useMotionValueEvent` to detect scroll direction.
+  - When scrolling down, the header should translate up (hide).
+  - When scrolling up, it should reveal itself but shrink slightly and apply an intense backdrop blur (`backdrop-blur-2xl bg-zinc-950/60`).
+- **Mega Menu (Desktop)**: Implement an interactive, animated dropdown menu for the navigation links using `AnimatePresence`. The dropdown should have a soft, multi-layered shadow and a subtle entrance animation (scale up from 0.95 to 1, opacity fade).
+- **Magnetic CTA**: The "Get Started" button in the header should feature a "magnetic" effect on hover (moving slightly towards the cursor) using Framer Motion.
 
-## Step 2: `MainHero.tsx`
-- Keep the existing props (`headline`, `subHeadline`, `ctaLabel`, `ctaUrl`).
-- **Background**: Upgrade the background effects. Instead of simple blur blobs, create a more complex, slow-moving animated background (e.g., aurora effect or glowing grid lines) using Framer Motion or pure CSS.
-- **Typography**: Enhance the headline with a modern text-gradient and letter-spacing tracking. Add a staggered reveal animation to the headline words/letters.
-- **CTA**: Design a highly converting "magnetic" or "glowing border" button for the primary CTA. When hovering, the gradient border should rotate or glow brighter.
-- **Hero Image/Mockup (Optional Addition)**: Add an abstract 3D-like floating element or dashboard mockup graphic that gently floats up and down.
+## Step 2: `MainHero.tsx` (Immersive Landing Experience)
+- **Background - Aurora / Mesh Gradient**: Instead of static blobs, implement a complex animated background. Use multiple overlapping, slow-moving `<motion.div>` elements with extreme blur (`blur-[120px]`) in deep blues, purples, and cyans. Rotate and translate them continuously on an infinite loop to create a breathing "Aurora" effect.
+- **Typography - Staggered Text Reveal**: The main `headline` must have a staggered reveal animation. Split the text into lines or words, and animate them sliding up from behind a hidden mask (`overflow-hidden`).
+  - Use a text gradient: `bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40`.
+- **Primary CTA - Glowing Border & Spotlight**: Create a highly advanced button.
+  - Add an absolute positioned element inside the button that acts as a "spotlight" following the user's mouse position (using `onMouseMove` and React state for X/Y coordinates).
+  - The border should be an animated gradient that slowly spins.
+- **Abstract Floating Mockup (Optional but Highly Recommended)**: Add a beautiful, abstract 3D-like representation of a dashboard or abstract geometric shapes below the text. Use Framer Motion to make it float up and down gently (y-axis sine wave).
 
 **Wait for my next command ("next") after you complete this step.**
