@@ -102,3 +102,8 @@ body {
   font-weight: var(--font-weight-caption);
   line-height: 1.5;
 }
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-100% / 3)); }
+}
